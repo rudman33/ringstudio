@@ -1,0 +1,89 @@
+ringstudio/
+├── app/
+│   ├── (builder)/
+│   │   └── [subdomain]/
+│   │       ├── page.tsx              # Customer ring builder
+│   │       └── layout.tsx            # Loads branding by subdomain
+│   ├── (admin)/
+│   │   └── admin/
+│   │       ├── layout.tsx            # Auth guard — must be logged in
+│   │       ├── page.tsx              # Redirect to /admin/dashboard
+│   │       ├── dashboard/page.tsx
+│   │       ├── inquiries/
+│   │       │   ├── page.tsx
+│   │       │   └── [id]/page.tsx
+│   │       ├── options/
+│   │       │   └── [stepKey]/page.tsx
+│   │       ├── steps/page.tsx
+│   │       └── settings/page.tsx
+│   ├── (superadmin)/
+│   │   └── superadmin/
+│   │       ├── layout.tsx            # Super admin auth guard
+│   │       ├── page.tsx
+│   │       ├── accounts/
+│   │       │   ├── page.tsx
+│   │       │   └── [id]/page.tsx
+│   │       └── settings/page.tsx
+│   ├── auth/
+│   │   ├── login/page.tsx
+│   │   ├── signup/page.tsx
+│   │   └── callback/route.ts         # Supabase OAuth callback
+│   ├── api/
+│   │   ├── builder/
+│   │   │   ├── config/route.ts       # GET: load steps+options by subdomain
+│   │   │   └── inquiry/route.ts      # POST: submit inquiry
+│   │   ├── admin/
+│   │   │   ├── options/route.ts      # CRUD options
+│   │   │   ├── steps/route.ts        # CRUD step order/visibility
+│   │   │   └── inquiries/route.ts    # GET/PATCH inquiries
+│   │   ├── superadmin/
+│   │   │   └── accounts/route.ts
+│   │   ├── stripe/
+│   │   │   └── webhook/route.ts      # Stripe webhook handler
+│   │   └── upload/route.ts           # Image upload to Supabase Storage
+│   ├── layout.tsx                    # Root layout
+│   └── page.tsx                      # Marketing landing page
+├── components/
+│   ├── builder/
+│   │   ├── RingBuilder.tsx           # Main wizard controller
+│   │   ├── steps/
+│   │   │   ├── StepContact.tsx
+│   │   │   ├── StepRingType.tsx
+│   │   │   ├── StepPhoto.tsx
+│   │   │   ├── StepPickOption.tsx    # Reusable: stone/shape/carat/setting/metal/band
+│   │   │   ├── StepEnhancements.tsx
+│   │   │   ├── StepPreferences.tsx
+│   │   │   ├── StepSummary.tsx
+│   │   │   └── StepVisualization.tsx
+│   │   ├── ProgressBar.tsx
+│   │   ├── PreviewStrip.tsx
+│   │   └── RingVisualization.tsx
+│   ├── admin/
+│   │   ├── AdminShell.tsx            # Sidebar + layout
+│   │   ├── OptionEditor.tsx          # Add/edit/remove options
+│   │   ├── StepOrderEditor.tsx       # Drag-and-drop step order
+│   │   ├── InquiryCard.tsx
+│   │   └── StatCard.tsx
+│   └── ui/
+│       ├── Button.tsx
+│       ├── Modal.tsx
+│       ├── Badge.tsx
+│       └── Input.tsx
+├── lib/
+│   ├── supabase/
+│   │   ├── client.ts                 # Browser Supabase client
+│   │   ├── server.ts                 # Server Supabase client (RSC)
+│   │   └── middleware.ts             # Session refresh helper
+│   ├── stripe.ts                     # Stripe client
+│   ├── email.ts                      # Resend email helpers
+│   └── utils.ts                      # Shared helpers
+├── hooks/
+│   ├── useBuilderConfig.ts           # Fetch steps+options for subdomain
+│   ├── useInquiries.ts
+│   └── useAccount.ts
+├── types/
+│   └── index.ts                      # Shared TypeScript types
+├── middleware.ts                      # Subdomain routing + auth
+├── next.config.ts
+├── .env.local                        # Environment variables
+└── package.json
