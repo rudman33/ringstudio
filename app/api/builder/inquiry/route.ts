@@ -9,22 +9,26 @@ export async function POST(request: NextRequest) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
+  const year = new Date().getFullYear()
+  const rand = String(Math.floor(Math.random() * 90000) + 10000)
+  const reference_code = `RNG-${year}-${rand}`
+
   const { data: inquiry, error } = await supabase
     .from('inquiries')
     .insert({
       account_id: body.account_id,
       customer_name: body.customer_name,
       customer_email: body.customer_email,
-      customer_phone: body.customer_phone,
-      ring_type: body.ring_type,
+      customer_phone: body.customer_phone || null,
+      ring_type: body.ring_type || null,
       selections: body.selections || {},
-      ring_size: body.ring_size,
-      band_width: body.band_width,
-      budget_range: body.budget_range,
-      timeline: body.timeline,
-      notes: body.notes,
-      source_url: body.source_url,
-      reference_code: '',
+      ring_size: body.ring_size || null,
+      band_width: body.band_width || null,
+      budget_range: body.budget_range || null,
+      timeline: body.timeline || null,
+      notes: body.notes || null,
+      source_url: body.source_url || null,
+      reference_code,
     })
     .select()
     .single()
