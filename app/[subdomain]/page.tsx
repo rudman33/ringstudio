@@ -30,13 +30,16 @@ export default function Page({params}:{params:{subdomain:string}}){
           const o=json.data.options
           const mapped:any={}
           Object.keys(o).forEach(key=>{
-            mapped[key]=o[key].map((item:any)=>({
-              v:item.label,
-              sub:item.description||'',
-              c:item.color_hex||CC[item.label]||'#F7F0E8',
-              sz:SZ[item.label]||27,
-              img:item.image_url||null
-            }))
+            mapped[key]=o[key].map((item:any)=>{
+              console.log('option:', item.label, 'image:', item.image_url)
+              return {
+                v:item.label,
+                sub:item.description||'',
+                c:item.color_hex||CC[item.label]||'#F7F0E8',
+                sz:SZ[item.label]||27,
+                img:item.image_url||null
+              }
+            })
           })
           if(Object.keys(mapped).length>0)setOpts({...DEFAULT,...mapped})
         }
