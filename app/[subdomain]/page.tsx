@@ -34,7 +34,8 @@ export default function Page({params}:{params:{subdomain:string}}){
               v:item.label,
               sub:item.description||'',
               c:item.color_hex||CC[item.label]||'#F7F0E8',
-              sz:SZ[item.label]||27
+              sz:SZ[item.label]||27,
+              img:item.image_url||null
             }))
           })
           if(Object.keys(mapped).length>0)setOpts({...DEFAULT,...mapped})
