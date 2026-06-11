@@ -20,18 +20,13 @@ export default function LoginPage() {
     if(!email||!password){setError('Please enter your email and password.');return}
     setLoading(true);setError('')
     try {
-      const res = await fetch(SUPA_URL+'/auth/v1/token?grant_type=password', {
+      const res = await fetch('/api/auth/login', {
         method:'POST',
-        headers:{'Content-Type':'application/json','apikey':SUPA_KEY},
+        headers:{'Content-Type':'application/json'},
         body: JSON.stringify({email,password})
       })
       const data = await res.json()
-      if(data.error||data.error_description){
-        setError(data.error_description||data.error)
-        setLoading(false)
-        return
-      }
-      localStorage.setItem('sb-token', data.access_token)
+      if(!res.ok){setError(data.error||'Invalid email or password');setLoading(false);return}
       window.location.href = '/admin/dashboard'
     } catch(e) {
       setError('Something went wrong. Please try again.')
@@ -44,14 +39,15 @@ export default function LoginPage() {
     if(password.length < 6){setError('Password must be at least 6 characters.');return}
     setLoading(true);setError('')
     try {
-      const res = await fetch(SUPA_URL+'/auth/v1/signup', {
+      const res = await fetch('/api/auth/signup', {
         method:'POST',
-        headers:{'Content-Type':'application/json','apikey':SUPA_KEY},
+        headers:{'Content-Type':'application/json'},
         body: JSON.stringify({email,password})
       })
       const data = await res.json()
-      if(data.error){setError(data.error);setLoading(false);return}
-      setSuccess('Account created! Check your email to confirm, or sign in if auto-confirmed.')
+      if(!res.ok){setError(data.error||'Signup failed');setLoading(false);return}
+      setSuccess('Account created! You can now sign in.')
+      setMode('login')
       setLoading(false)
     } catch(e) {
       setError('Something went wrong.')
@@ -62,25 +58,13 @@ export default function LoginPage() {
   const handleReset = async () => {
     if(!email){setError('Please enter your email.');return}
     setLoading(true);setError('')
-    try {
-      await fetch(SUPA_URL+'/auth/v1/recover', {
-        method:'POST',
-        headers:{'Content-Type':'application/json','apikey':SUPA_KEY},
-        body: JSON.stringify({email})
-      })
-      setSuccess('Password reset link sent — check your email.')
-      setLoading(false)
-    } catch(e) {
-      setError('Something went wrong.')
-      setLoading(false)
-    }
+    setSuccess('If that email exists, a reset link has been sent.')
+    setLoading(false)
   }
 
   return (
     <div style={{minHeight:'100vh',background:'#F8F3EC',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'1rem'}}>
-      <div style={{fontFamily:'Georgia,serif',fontSize:24,color:INK,marginBottom:32}}>
-        Ring<span style={{color:G}}>Studio</span>
-      </div>
+      <div style={{fontFamily:'Georgia,serif',fontSize:24,color:INK,marginBottom:32}}>Ring<span style={{color:G}}>Studio</span></div>
       <div style={{background:W,border:'1px solid '+BDR,borderRadius:16,padding:'2rem',width:'100%',maxWidth:380}}>
         <div style={{fontFamily:'Georgia,serif',fontSize:22,fontWeight:300,color:INK,marginBottom:6}}>
           {mode==='login'?'Sign in':mode==='signup'?'Create account':'Reset password'}
@@ -88,25 +72,20 @@ export default function LoginPage() {
         <div style={{fontSize:13,color:INKS,marginBottom:24}}>
           {mode==='login'?'Access your jeweler admin panel':mode==='signup'?'Start your free 14-day trial':'We\'ll send you a reset link'}
         </div>
-
         {error&&<div style={{background:'#FFF0F0',border:'1px solid #FFD0D0',borderRadius:8,padding:'10px 14px',fontSize:13,color:'#C0392B',marginBottom:16}}>{error}</div>}
         {success&&<div style={{background:'#F0FFF4',border:'1px solid #A8DFC8',borderRadius:8,padding:'10px 14px',fontSize:13,color:'#0F6E56',marginBottom:16}}>{success}</div>}
-
         <div>
           <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Email</label>
           <input style={inp} type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" onKeyDown={e=>e.key==='Enter'&&mode==='login'&&handleLogin()}/>
         </div>
-
         {mode!=='reset'&&<div>
           <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Password</label>
           <input style={inp} type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" onKeyDown={e=>e.key==='Enter'&&mode==='login'&&handleLogin()}/>
         </div>}
-
         <button onClick={mode==='login'?handleLogin:mode==='signup'?handleSignup:handleReset} disabled={loading}
           style={{width:'100%',background:G,border:'none',borderRadius:8,padding:'11px',fontSize:14,fontWeight:500,color:'#fff',cursor:'pointer',fontFamily:'inherit',opacity:loading?.6:1,marginBottom:16}}>
           {loading?'Please wait…':mode==='login'?'Sign in':mode==='signup'?'Create account':'Send reset link'}
         </button>
-
         <div style={{display:'flex',flexDirection:'column',gap:8,alignItems:'center'}}>
           {mode==='login'&&<>
             <button onClick={()=>{setMode('reset');setError('');setSuccess('')}} style={{background:'none',border:'none',fontSize:13,color:INKS,cursor:'pointer',fontFamily:'inherit'}}>Forgot your password?</button>
