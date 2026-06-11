@@ -1,5 +1,61 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+
+const G='#B5966D',GD='#8A6D48',GP='#FAF5EE',INK='#1C1612',INKS='#9C8470',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
+const ACCOUNT_ID='8433f769-632e-4426-b07b-0f5c9e7a2fe6'
+const STEP_KEYS=['stone','shape','carat','setting','metal','band','enh']
+const STEP_LABELS:any={stone:'Stone',shape:'Shape',carat:'Carat',setting:'Setting',metal:'Metal',band:'Band',enh:'Enhancements'}
+
+function InqRow({inq,onUpdate}:{inq:any,onUpdate:(id:string,status:string)=>void}){
+  const [open,setOpen]=useState(false)
+  const statusColors:any={new:'#EEEDFE',read:'#F0F0F0',quoted:'#E1F5EE',closed:'#F0F0F0',spam:'#FCEBEB'}
+  const statusText:any={new:'#534AB7',read:'#666',quoted:'#0F6E56',closed:'#666',spam:'#A32D2D'}
+  return(
+    <div style={{background:W,border:'1px solid '+BDR,borderRadius:12,marginBottom:10,overflow:'hidden'}}>
+      <div style={{display:'flex',alignItems:'center',gap:12,padding:'13px 16px',cursor:'pointer'}} onClick={()=>setOpen(o=>!o)}>
+        <div style={{flex:1}}>
+          <div style={{fontSize:14,fontWeight:500,color:INK,display:'flex',alignItems:'center',gap:8}}>
+            {inq.customer_name}
+            <span style={{fontSize:10,padding:'2px 8px',borderRadius:20,background:statusColors[inq.status]||'#eee',color:statusText[inq.status]||'#666'}}>{inq.status}</span>
+          </div>
+          <div style={{fontSize:12,color:INKS,marginTop:2}}>{inq.customer_email}</div>
+        </div>
+        <div style={{textAlign:'right',flexShrink:0}}>
+          <div style={{fontSize:11,color:G,fontWeight:500}}>{inq.reference_code}</div>
+          <div style={{fontSize:11,color:INKS}}>{inq.created_at?.slice(0,10)}</div>
+        </div>
+        <div style={{color:INKS,fontSize:12}}>{open?'▲':'▼'}</div>
+      </div>
+      {open&&<div style={{padding:'14px 16px',borderTop:'1px solid '+BDR,background:'#FAFAF9'}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'4px 16px',marginBottom:12}}>
+          {[['Ring type',inq.ring_type],['Stone',inq.selections?.stone],['Shape',inq.selections?.shape],['Carat',inq.selections?.carat],['Setting',inq.selections?.setting],['Metal',inq.selections?.metal],['Band',inq.selections?.band],['Budget',inq.budget_range],['Timeline',inq.timeline],['Ring size',inq.ring_size],['Phone',inq.customer_phone]].map(([k,v])=>v?(
+            <div key={k} style={{fontSize:12,display:'flex',gap:6}}><span style={{color:INKS}}>{k}:</span><span style={{fontWeight:500,color:INK}}>{v}</span></div>
+          ):null)}
+        </div>
+        {inq.notes&&<div style={{fontSize:12,color:INKS,marginBottom:12,padding:'8px 12px',background:W,borderRadius:8,border:'1px solid '+BDR}}>{inq.notes}</div>}
+        <div style={{display:'flex',alignItems:'center',gap:8}}>
+          <label style={{fontSize:12,color:INKS}}>Status:</label>
+          <select value={inq.status} onChange={e=>onUpdate(inq.id,e.target.value)} style={{fontSize:12,padding:'4px 8px',borderRadius:20,border:'1px solid '+BDR,background:W,cursor:'pointer'}}>
+            {['new','read','quoted','closed','spam'].map(s=><option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
+      </div>}
+    </div>
+  )
+}
+
+export default function AdminDashboard(){
+  const [page,setPage]=useState('dashboard')
+  const [inqui
+
+
+
+
+
+
+cat > ~/ringstudio/app/admin/dashboard/page.tsx << 'EOF'
+'use client'
+import { useState, useEffect, useRef } from 'react'
 
 const G='#B5966D',GD='#8A6D48',GP='#FAF5EE',INK='#1C1612',INKS='#9C8470',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
 const ACCOUNT_ID='8433f769-632e-4426-b07b-0f5c9e7a2fe6'
@@ -52,7 +108,9 @@ export default function AdminDashboard(){
   const [activeStep,setActiveStep]=useState('stone')
   const [showModal,setShowModal]=useState(false)
   const [editingOpt,setEditingOpt]=useState<any>(null)
-  const [form,setForm]=useState({label:'',description:'',color_hex:''})
+  const [form,setForm]=useState({label:'',description:'',color_hex:'',image_url:''})
+  const [uploading,setUploading]=useState(false)
+  const fileRef=useRef<HTMLInputElement>(null)
 
   useEffect(()=>{loadAll()},[])
 
@@ -72,6 +130,16 @@ export default function AdminDashboard(){
     setInquiries(p=>p.map((i:any)=>i.id===id?{...i,status}:i))
   }
 
+  async function uploadImage(file:File){
+    setUploading(true)
+    const fd=new FormData()
+    fd.append('file',file)
+    fd.append('path',`options/${ACCOUNT_ID}/${activeStep}/${Date.now()}-${file.name}`)
+    const res=await fetch('/api/admin/upload',{method:'POST',body:fd}).then(r=>r.json())
+    if(res.url) setForm(p=>({...p,image_url:res.url}))
+    setUploading(false)
+  }
+
   async function saveOption(){
     if(!form.label.trim()) return
     if(editingOpt){
@@ -79,7 +147,7 @@ export default function AdminDashboard(){
     } else {
       await fetch('/api/admin/options',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...form,account_id:ACCOUNT_ID,step_key:activeStep,sort_order:99})})
     }
-    setShowModal(false);setEditingOpt(null);setForm({label:'',description:'',color_hex:''})
+    setShowModal(false);setEditingOpt(null);setForm({label:'',description:'',color_hex:'',image_url:''})
     const res=await fetch('/api/admin/options').then(r=>r.json())
     if(res.data) setOptions(res.data)
   }
@@ -91,8 +159,8 @@ export default function AdminDashboard(){
     if(res.data) setOptions(res.data)
   }
 
-  function openEdit(opt:any){setEditingOpt(opt);setForm({label:opt.label,description:opt.description||'',color_hex:opt.color_hex||''});setShowModal(true)}
-  function openAdd(){setEditingOpt(null);setForm({label:'',description:'',color_hex:''});setShowModal(true)}
+  function openEdit(opt:any){setEditingOpt(opt);setForm({label:opt.label,description:opt.description||'',color_hex:opt.color_hex||'',image_url:opt.image_url||''});setShowModal(true)}
+  function openAdd(){setEditingOpt(null);setForm({label:'',description:'',color_hex:'',image_url:''});setShowModal(true)}
 
   const btn=(col:string,txtCol?:string)=>({background:col,border:'none',borderRadius:7,padding:'7px 14px',fontSize:12,fontWeight:500,color:txtCol||'#fff',cursor:'pointer',fontFamily:'inherit'} as any)
   const inp2={width:'100%',padding:'9px 12px',fontSize:13,border:'1px solid '+BDRS,borderRadius:8,background:W,color:INK,outline:'none',fontFamily:'inherit',marginBottom:10} as any
@@ -148,7 +216,7 @@ export default function AdminDashboard(){
 
           {!loading&&page==='options'&&<div>
             <div style={{fontFamily:'Georgia,serif',fontSize:26,fontWeight:300,color:INK,marginBottom:4}}>Ring options</div>
-            <div style={{fontSize:13,color:INKS,marginBottom:20}}>Manage choices shown to customers.</div>
+            <div style={{fontSize:13,color:INKS,marginBottom:20}}>Upload photos for each option to customise your builder.</div>
             <div style={{display:'flex',gap:8,marginBottom:20,flexWrap:'wrap' as const}}>
               {STEP_KEYS.map(k=><button key={k} onClick={()=>setActiveStep(k)} style={btn(activeStep===k?G:'#E8E0D8',activeStep===k?'#fff':INK)}>{STEP_LABELS[k]}</button>)}
             </div>
@@ -157,18 +225,30 @@ export default function AdminDashboard(){
                 <div style={{fontSize:13,fontWeight:500,color:INK}}>{STEP_LABELS[activeStep]} <span style={{color:INKS,fontWeight:400}}>({(options[activeStep]||[]).length})</span></div>
                 <button onClick={openAdd} style={btn(G)}>+ Add option</button>
               </div>
-              {(options[activeStep]||[]).map((opt:any)=>(
-                <div key={opt.id} style={{display:'flex',alignItems:'center',gap:10,padding:'9px 0',borderBottom:'1px solid '+BDR}}>
-                  {opt.color_hex&&<div style={{width:20,height:20,borderRadius:'50%',background:opt.color_hex,border:'1px solid '+BDR,flexShrink:0}}/>}
-                  <div style={{flex:1}}>
-                    <div style={{fontSize:13,fontWeight:500,color:INK}}>{opt.label}</div>
-                    {opt.description&&<div style={{fontSize:11,color:INKS}}>{opt.description}</div>}
+              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))',gap:12}}>
+                {(options[activeStep]||[]).map((opt:any)=>(
+                  <div key={opt.id} style={{border:'1px solid '+BDR,borderRadius:10,overflow:'hidden',background:'#FAFAF9'}}>
+                    <div style={{width:'100%',aspectRatio:'1',background:GP,display:'flex',alignItems:'center',justifyContent:'center',position:'relative',overflow:'hidden'}}>
+                      {opt.image_url
+                        ?<img src={opt.image_url} alt={opt.label} style={{width:'100%',height:'100%',objectFit:'cover'}}/>
+                        :<div style={{textAlign:'center'}}>
+                          {opt.color_hex&&<div style={{width:40,height:40,borderRadius:'50%',background:opt.color_hex,margin:'0 auto 8px',border:'1px solid '+BDR}}/>}
+                          <div style={{fontSize:11,color:INKG}}>No image</div>
+                        </div>
+                      }
+                    </div>
+                    <div style={{padding:'8px 10px'}}>
+                      <div style={{fontSize:12,fontWeight:500,color:INK,marginBottom:2}}>{opt.label}</div>
+                      {opt.description&&<div style={{fontSize:11,color:INKS,marginBottom:6}}>{opt.description}</div>}
+                      <div style={{display:'flex',gap:6}}>
+                        <button onClick={()=>openEdit(opt)} style={{flex:1,...btn('#F0EBE4',INK),fontSize:11,padding:'4px 0'}}>Edit</button>
+                        <button onClick={()=>deleteOption(opt.id)} style={{...btn('#FCEBEB','#C0392B'),fontSize:11,padding:'4px 8px'}}>✕</button>
+                      </div>
+                    </div>
                   </div>
-                  <button onClick={()=>openEdit(opt)} style={{background:'none',border:'none',cursor:'pointer',fontSize:12,color:INKS}}>Edit</button>
-                  <button onClick={()=>deleteOption(opt.id)} style={{background:'none',border:'none',cursor:'pointer',fontSize:12,color:'#C0392B'}}>Delete</button>
-                </div>
-              ))}
-              {(options[activeStep]||[]).length===0&&<div style={{fontSize:13,color:INKS,padding:'1rem 0',textAlign:'center'}}>No options yet.</div>}
+                ))}
+              </div>
+              {(options[activeStep]||[]).length===0&&<div style={{fontSize:13,color:INKS,padding:'1rem 0',textAlign:'center'}}>No options yet. Add some above.</div>}
             </div>
           </div>}
 
@@ -199,19 +279,37 @@ export default function AdminDashboard(){
       </div>
 
       {showModal&&<div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.4)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center'}}>
-        <div style={{background:W,borderRadius:14,padding:'24px',width:360,maxWidth:'95vw'}}>
+        <div style={{background:W,borderRadius:14,padding:'24px',width:380,maxWidth:'95vw',maxHeight:'90vh',overflowY:'auto' as const}}>
           <div style={{fontFamily:'Georgia,serif',fontSize:20,fontWeight:300,color:INK,marginBottom:16}}>{editingOpt?'Edit':'Add'} {STEP_LABELS[activeStep]} option</div>
+          
           <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Name</label>
           <input style={inp2} value={form.label} onChange={e=>setForm(p=>({...p,label:e.target.value}))} placeholder="e.g. Alexandrite"/>
+          
           <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Description</label>
           <input style={inp2} value={form.description} onChange={e=>setForm(p=>({...p,description:e.target.value}))} placeholder="e.g. Colour-changing gem"/>
+
+          <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Photo</label>
+          <input ref={fileRef} type="file" accept="image/*" style={{display:'none'}} onChange={e=>e.target.files?.[0]&&uploadImage(e.target.files[0])}/>
+          {form.image_url
+            ?<div style={{position:'relative',marginBottom:10}}>
+              <img src={form.image_url} alt="preview" style={{width:'100%',height:160,objectFit:'cover',borderRadius:8,border:'1px solid '+BDR}}/>
+              <button onClick={()=>setForm(p=>({...p,image_url:''}))} style={{position:'absolute',top:6,right:6,background:'rgba(0,0,0,.5)',border:'none',borderRadius:'50%',width:24,height:24,color:'#fff',cursor:'pointer',fontSize:12}}>✕</button>
+            </div>
+            :<div onClick={()=>fileRef.current?.click()} style={{border:'1px dashed '+BDRS,borderRadius:8,padding:'1.5rem',textAlign:'center',cursor:'pointer',marginBottom:10,background:uploading?GP:'transparent'}}>
+              <div style={{fontSize:24,marginBottom:6}}>📷</div>
+              <div style={{fontSize:13,color:INKS}}>{uploading?'Uploading…':'Click to upload a photo'}</div>
+              <div style={{fontSize:11,color:INKG,marginTop:3}}>JPG, PNG or WEBP</div>
+            </div>
+          }
+
           {(activeStep==='metal'||activeStep==='stone')&&<>
-            <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Colour swatch</label>
+            <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Colour swatch (fallback)</label>
             <input type="color" value={form.color_hex||'#B5966D'} onChange={e=>setForm(p=>({...p,color_hex:e.target.value}))} style={{height:38,width:'100%',padding:'2px 6px',border:'1px solid '+BDRS,borderRadius:8,marginBottom:10}}/>
           </>}
+
           <div style={{display:'flex',justifyContent:'flex-end',gap:8,marginTop:8}}>
             <button onClick={()=>{setShowModal(false);setEditingOpt(null)}} style={{background:'none',border:'1px solid '+BDR,borderRadius:7,padding:'8px 16px',fontSize:13,color:INKS,cursor:'pointer',fontFamily:'inherit'}}>Cancel</button>
-            <button onClick={saveOption} style={{...btn(G),padding:'8px 16px',fontSize:13}}>Save</button>
+            <button onClick={saveOption} disabled={uploading} style={{...btn(G),padding:'8px 16px',fontSize:13,opacity:uploading?.6:1}}>Save</button>
           </div>
         </div>
       </div>}

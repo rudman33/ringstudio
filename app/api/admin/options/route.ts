@@ -32,7 +32,15 @@ export async function POST(req: NextRequest) {
   const supabase = getClient()
   const { data, error } = await supabase
     .from('step_options')
-    .insert({ account_id: ACCOUNT_ID, step_key: body.step_key, label: body.label, description: body.description || null, color_hex: body.color_hex || null, sort_order: body.sort_order || 99 })
+    .insert({
+      account_id: ACCOUNT_ID,
+      step_key: body.step_key,
+      label: body.label,
+      description: body.description || null,
+      color_hex: body.color_hex || null,
+      image_url: body.image_url || null,
+      sort_order: body.sort_order || 99
+    })
     .select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ data })
@@ -43,7 +51,12 @@ export async function PATCH(req: NextRequest) {
   const supabase = getClient()
   const { data, error } = await supabase
     .from('step_options')
-    .update({ label: body.label, description: body.description || null, color_hex: body.color_hex || null })
+    .update({
+      label: body.label,
+      description: body.description || null,
+      color_hex: body.color_hex || null,
+      image_url: body.image_url || null
+    })
     .eq('id', body.id)
     .select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
