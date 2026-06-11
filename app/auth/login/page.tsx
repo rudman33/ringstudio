@@ -1,13 +1,10 @@
 'use client'
 import { useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 const G='#B5966D',INK='#1C1612',INKS='#9C8470',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
+
+const SUPA_URL='https://hzxpilquathfccmxhhfu.supabase.co'
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6eHBpbHF1YXRoZmNjbXhoaGZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjM4NjcsImV4cCI6MjA5NjU5OTg2N30.QdaKnYen8I0fRhPpcx-OCuF7kHIL1kr2fIVDiS-sMv8'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -22,30 +19,61 @@ export default function LoginPage() {
   const handleLogin = async () => {
     if(!email||!password){setError('Please enter your email and password.');return}
     setLoading(true);setError('')
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if(error){setError(error.message);setLoading(false);return}
-    window.location.href = '/admin/dashboard'
+    try {
+      const res = await fetch(SUPA_URL+'/auth/v1/token?grant_type=password', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPA_KEY},
+        body: JSON.stringify({email,password})
+      })
+      const data = await res.json()
+      if(data.error||data.error_description){
+        setError(data.error_description||data.error)
+        setLoading(false)
+        return
+      }
+      localStorage.setItem('sb-token', data.access_token)
+      window.location.href = '/admin/dashboard'
+    } catch(e) {
+      setError('Something went wrong. Please try again.')
+      setLoading(false)
+    }
   }
 
   const handleSignup = async () => {
     if(!email||!password){setError('Please enter your email and password.');return}
     if(password.length < 6){setError('Password must be at least 6 characters.');return}
     setLoading(true);setError('')
-    const { error } = await supabase.auth.signUp({ email, password })
-    if(error){setError(error.message);setLoading(false);return}
-    setSuccess('Check your email to confirm your account.')
-    setLoading(false)
+    try {
+      const res = await fetch(SUPA_URL+'/auth/v1/signup', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPA_KEY},
+        body: JSON.stringify({email,password})
+      })
+      const data = await res.json()
+      if(data.error){setError(data.error);setLoading(false);return}
+      setSuccess('Account created! Check your email to confirm, or sign in if auto-confirmed.')
+      setLoading(false)
+    } catch(e) {
+      setError('Something went wrong.')
+      setLoading(false)
+    }
   }
 
   const handleReset = async () => {
     if(!email){setError('Please enter your email.');return}
     setLoading(true);setError('')
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/auth/update-password'
-    })
-    if(error){setError(error.message);setLoading(false);return}
-    setSuccess('Password reset link sent — check your email.')
-    setLoading(false)
+    try {
+      await fetch(SUPA_URL+'/auth/v1/recover', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPA_KEY},
+        body: JSON.stringify({email})
+      })
+      setSuccess('Password reset link sent — check your email.')
+      setLoading(false)
+    } catch(e) {
+      setError('Something went wrong.')
+      setLoading(false)
+    }
   }
 
   return (
@@ -61,26 +89,21 @@ export default function LoginPage() {
           {mode==='login'?'Access your jeweler admin panel':mode==='signup'?'Start your free 14-day trial':'We\'ll send you a reset link'}
         </div>
 
-        {error && <div style={{background:'#FFF0F0',border:'1px solid #FFD0D0',borderRadius:8,padding:'10px 14px',fontSize:13,color:'#C0392B',marginBottom:16}}>{error}</div>}
-        {success && <div style={{background:'#F0FFF4',border:'1px solid #A8DFC8',borderRadius:8,padding:'10px 14px',fontSize:13,color:'#0F6E56',marginBottom:16}}>{success}</div>}
+        {error&&<div style={{background:'#FFF0F0',border:'1px solid #FFD0D0',borderRadius:8,padding:'10px 14px',fontSize:13,color:'#C0392B',marginBottom:16}}>{error}</div>}
+        {success&&<div style={{background:'#F0FFF4',border:'1px solid #A8DFC8',borderRadius:8,padding:'10px 14px',fontSize:13,color:'#0F6E56',marginBottom:16}}>{success}</div>}
 
         <div>
           <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Email</label>
           <input style={inp} type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" onKeyDown={e=>e.key==='Enter'&&mode==='login'&&handleLogin()}/>
         </div>
 
-        {mode !== 'reset' && (
-          <div>
-            <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Password</label>
-            <input style={inp} type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" onKeyDown={e=>e.key==='Enter'&&mode==='login'&&handleLogin()}/>
-          </div>
-        )}
+        {mode!=='reset'&&<div>
+          <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Password</label>
+          <input style={inp} type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" onKeyDown={e=>e.key==='Enter'&&mode==='login'&&handleLogin()}/>
+        </div>}
 
-        <button
-          onClick={mode==='login'?handleLogin:mode==='signup'?handleSignup:handleReset}
-          disabled={loading}
-          style={{width:'100%',background:G,border:'none',borderRadius:8,padding:'11px',fontSize:14,fontWeight:500,color:'#fff',cursor:'pointer',fontFamily:'inherit',opacity:loading?.6:1,marginBottom:16}}
-        >
+        <button onClick={mode==='login'?handleLogin:mode==='signup'?handleSignup:handleReset} disabled={loading}
+          style={{width:'100%',background:G,border:'none',borderRadius:8,padding:'11px',fontSize:14,fontWeight:500,color:'#fff',cursor:'pointer',fontFamily:'inherit',opacity:loading?.6:1,marginBottom:16}}>
           {loading?'Please wait…':mode==='login'?'Sign in':mode==='signup'?'Create account':'Send reset link'}
         </button>
 
