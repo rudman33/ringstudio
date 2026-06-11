@@ -18,14 +18,14 @@ export default function Page({params}:{params:{subdomain:string}}){
   const [done,setDone]=useState(false)
   const [ref,setRef]=useState('')
   const [opts,setOpts]=useState<any>(DEFAULT)
-  const [accountId,setAccountId]=useState<string|null>(null)
+  const [accountId,setAccountId]=useState<string>('8433f769-632e-4426-b07b-0f5c9e7a2fe6')
   const [loading,setLoading]=useState(true)
 
   useEffect(()=>{
     fetch(`/api/builder/config?subdomain=${params.subdomain}`)
       .then(r=>r.json())
       .then(json=>{
-        if(json.data){
+        if(json.data?.account?.id){
           setAccountId(json.data.account.id)
           const o=json.data.options
           const mapped:any={}
@@ -51,7 +51,7 @@ export default function Page({params}:{params:{subdomain:string}}){
 
   const submit=async()=>{
     try{
-      const res=await fetch('/api/builder/inquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({account_id:accountId,customer_name:(contact.first+' '+contact.last).trim(),customer_email:contact.email,customer_phone:contact.phone,ring_type:R.type,selections:R,ring_size:prefs.size,band_width:prefs.width,budget_range:prefs.budget,timeline:prefs.timeline,notes:prefs.notes,source_url:window.location.href})})
+      const res=await fetch('/api/builder/inquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({account_id:accountId,customer_name:(contact.first+' '+contact.last).trim(),customer_email:contact.email,customer_phone:contact.phone||null,ring_type:R.type||null,selections:R,ring_size:prefs.size||null,band_width:prefs.width||null,budget_range:prefs.budget||null,timeline:prefs.timeline||null,notes:prefs.notes||null,source_url:window.location.href})})
       const json=await res.json()
       setRef(json.data?.reference_code||'RNG-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*9000)+1000))
     }catch(e){
