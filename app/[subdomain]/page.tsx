@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 
 const G='#B5966D',GD='#8A6D48',GP='#FAF5EE',INK='#1C1612',INKS='#9C8470',INKG='#C8B8A8',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
 const SC:any={Diamond:'#E8F4FF',Sapphire:'#C5D8F0',Emerald:'#C8E8D0',Ruby:'#FAD0D0',Morganite:'#FAE0EC',Moissanite:'#EEEDFE'}
@@ -8,7 +8,8 @@ const SZ:any={'0.5 ct':18,'0.75 ct':22,'1.0 ct':27,'1.5 ct':31,'2.0 ct':35,'2.5+
 const CC:any={Diamond:'#E8F4FF',Sapphire:'#C5D8F0',Emerald:'#C8E8D0',Ruby:'#FAD0D0',Morganite:'#FAE0EC',Moissanite:'#EEEDFE','Yellow Gold':'#E8C45A','White Gold':'#D8D8E4','Rose Gold':'#E8A48A','Platinum':'#C4C4D4','Two-Tone':'#D4B870'}
 const DEFAULT:any={stone:[{v:'Diamond',sub:'Classic brilliance',c:'#E8F4FF'},{v:'Sapphire',sub:'Deep royal blue',c:'#C5D8F0'},{v:'Emerald',sub:'Rich vivid green',c:'#C8E8D0'},{v:'Ruby',sub:'Passionate red',c:'#FAD0D0'},{v:'Morganite',sub:'Soft blush pink',c:'#FAE0EC'},{v:'Moissanite',sub:'Eco-friendly',c:'#EEEDFE'}],shape:[{v:'Round',sub:'Most brilliant'},{v:'Princess',sub:'Bold & modern'},{v:'Oval',sub:'Elongates finger'},{v:'Cushion',sub:'Soft & romantic'},{v:'Marquise',sub:'Dramatic'},{v:'Pear',sub:'Elegant teardrop'},{v:'Emerald cut',sub:'Art deco'},{v:'Radiant',sub:'Brilliant & fiery'}],carat:[{v:'0.5 ct',sub:'Subtle',sz:18},{v:'0.75 ct',sub:'Popular',sz:22},{v:'1.0 ct',sub:'Benchmark',sz:27},{v:'1.5 ct',sub:'Eye-catching',sz:31},{v:'2.0 ct',sub:'Bold',sz:35},{v:'2.5+ ct',sub:'Maximum',sz:38}],setting:[{v:'Solitaire',sub:'Timeless'},{v:'Halo',sub:'Surrounded by sparkle'},{v:'Pavé',sub:'Diamond-lined'},{v:'Three Stone',sub:'Past present future'},{v:'Bezel',sub:'Modern'},{v:'Vintage',sub:'Ornate'}],metal:[{v:'Yellow Gold',sub:'Classic & warm',c:'#E8C45A'},{v:'White Gold',sub:'Modern & sleek',c:'#D8D8E4'},{v:'Rose Gold',sub:'Romantic & warm',c:'#E8A48A'},{v:'Platinum',sub:'Premium',c:'#C4C4D4'},{v:'Two-Tone',sub:'Mixed metals',c:'#D4B870'}],band:[{v:'Plain',sub:'Minimal'},{v:'Twisted',sub:'Braided'},{v:'Eternity',sub:'Diamonds around'},{v:'Milgrain',sub:'Vintage edge'},{v:'Cathedral',sub:'Arched'},{v:'Split Shank',sub:'Fork design'}],enh:[{v:'Engraving',sub:'Message inside'},{v:'Side stones',sub:'On the shank'},{v:'Filigree',sub:'Metalwork'},{v:'Conflict-free cert.',sub:'Ethical'},{v:'Hidden halo',sub:'Secret sparkle'},{v:'Rush production',sub:'Priority'}]}
 
-export default function Page({params}:{params:{subdomain:string}}){
+export default function Page({params}:{params:Promise<{subdomain:string}>}){
+  const {subdomain}=use(params)
   const T=13
   const [cur,setCur]=useState(1)
   const [R,setR]=useState<any>({})
@@ -22,7 +23,7 @@ export default function Page({params}:{params:{subdomain:string}}){
   const [loading,setLoading]=useState(true)
 
   useEffect(()=>{
-    fetch(`/api/builder/config?subdomain=${params.subdomain}`)
+    fetch(`/api/builder/config?subdomain=${subdomain}`)
       .then(r=>r.json())
       .then(json=>{
         if(json.data?.account?.id){
@@ -46,7 +47,7 @@ export default function Page({params}:{params:{subdomain:string}}){
       })
       .catch(()=>{})
       .finally(()=>setLoading(false))
-  },[params.subdomain])
+  },[subdomain])
 
   const set=(k:string,v:string)=>setR((p:any)=>({...p,[k]:v}))
   const next=()=>{if(cur===1&&(!contact.first||!contact.email)){alert('Please enter your name and email.');return}if(cur<T)setCur(c=>c+1)}
