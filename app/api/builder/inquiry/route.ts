@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
@@ -36,6 +39,75 @@ export async function POST(request: NextRequest) {
   if (error) {
     console.error('Inquiry error:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  // Email to jeweler
+  const sel = body.selections || {}
+  const jewelerHtml = `
+    <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:2rem;background:#F8F3EC;">
+      <div style="background:#fff;border-radius:12px;padding:2rem;border:1px solid rgba(181,150,109,0.2)">
+        <h1 style="color:#1C1612;font-weight:300;font-size:28px;margin:0 0 4px">New ring inquiry</h1>
+        <p style="color:#9C8470;margin:0 0 24px;font-size:14px">Reference: <strong style="color:#B5966D">${reference_code}</strong></p>
+        
+        <h3 style="color:#B5966D;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">Customer</h3>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
+          <tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#9C8470;font-size:13px">Name</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${body.customer_name}</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#9C8470;font-size:13px">Email</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${body.customer_email}</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#9C8470;font-size:13px">Phone</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${body.customer_phone || '—'}</td></tr>
+        </table>
+        
+        <h3 style="color:#B5966D;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">Ring design</h3>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
+          ${[['Type',body.ring_type],['Stone',sel.stone],['Shape',sel.shape],['Carat',sel.carat],['Setting',sel.setting],['Metal',sel.metal],['Band',sel.band],['Budget',body.budget_range],['Timeline',body.timeline],['Ring size',body.ring_size]].filter(([,v])=>v).map(([k,v])=>`<tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#9C8470;font-size:13px">${k}</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${v}</td></tr>`).join('')}
+        </table>
+        
+        ${body.notes ? `<h3 style="color:#B5966D;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 8px">Notes</h3><p style="font-size:13px;color:#5A4A3A;background:#FAF5EE;padding:12px;border-radius:8px;margin:0 0 24px">${body.notes}</p>` : ''}
+        
+        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://ringstudio-git-main-rudman33s-projects.vercel.app'}/admin/dashboard" style="display:inline-block;background:#B5966D;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500">View in admin panel</a>
+      </div>
+    </div>
+  `
+
+  // Email to customer
+  const customerHtml = `
+    <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:2rem;background:#F8F3EC;">
+      <div style="background:#fff;border-radius:12px;padding:2rem;border:1px solid rgba(181,150,109,0.2)">
+        <h1 style="color:#1C1612;font-weight:300;font-size:28px;margin:0 0 4px">Your ring inquiry</h1>
+        <p style="color:#9C8470;margin:0 0 24px;font-size:14px">Thank you for submitting your design. We'll be in touch within 24 hours.</p>
+        
+        <div style="background:#FAF5EE;border-radius:10px;padding:16px;margin-bottom:24px;text-align:center">
+          <div style="font-size:11px;color:#9C8470;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Your reference</div>
+          <div style="font-size:24px;color:#B5966D;font-weight:400">${reference_code}</div>
+        </div>
+        
+        <h3 style="color:#B5966D;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">Your design</h3>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
+          ${[['Ring type',body.ring_type],['Stone',sel.stone],['Shape',sel.shape],['Carat',sel.carat],['Setting',sel.setting],['Metal',sel.metal],['Band',sel.band]].filter(([,v])=>v).map(([k,v])=>`<tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#9C8470;font-size:13px">${k}</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${v}</td></tr>`).join('')}
+        </table>
+        
+        <p style="font-size:13px;color:#9C8470;margin:0">Keep this email for your records. A jewellery specialist will contact you shortly.</p>
+      </div>
+    </div>
+  `
+
+  // Send emails (don't block the response if they fail)
+  try {
+    await Promise.all([
+      resend.emails.send({
+        from: 'Ring Studio <onboarding@resend.dev>',
+        to: ['rudman33@hotmail.com'],
+        subject: `New ring inquiry — ${reference_code}`,
+        html: jewelerHtml,
+      }),
+      resend.emails.send({
+        from: 'Ring Studio <onboarding@resend.dev>',
+        to: [body.customer_email],
+        subject: `Your ring inquiry — ${reference_code}`,
+        html: customerHtml,
+      })
+    ])
+  } catch (emailError) {
+    console.error('Email error:', emailError)
   }
 
   return NextResponse.json({ data: { reference_code: inquiry.reference_code, id: inquiry.id } }, { status: 201 })
