@@ -61,7 +61,7 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
       const formData=new FormData()
       formData.append('file',file)
       formData.append('path',`inspiration/${Date.now()}-${file.name}`)
-      const res=await fetch('/api/admin/upload',{method:'POST',body:formData})
+      const res=await fetch('/api/upload/inspiration',{method:'POST',body:formData})
       const json=await res.json()
       if(!res.ok)throw new Error(json.error||'Upload failed')
       set('photo',json.url)
