@@ -91,6 +91,12 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
     setAiGenerating(false)
   }
 
+  useEffect(()=>{
+    if(cur===13 && !aiImage && !aiGenerating){
+      generateAiImage()
+    }
+  },[cur])
+
   const submit=async()=>{
     try{
       const res=await fetch('/api/builder/inquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({account_id:accountId,customer_name:(contact.first+' '+contact.last).trim(),customer_email:contact.email,customer_phone:contact.phone||null,ring_type:R.type||null,selections:R,ring_size:prefs.size||null,band_width:prefs.width||null,budget_range:prefs.budget||null,timeline:prefs.timeline||null,notes:prefs.notes||null,source_url:window.location.href})})
@@ -134,7 +140,7 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
       <div style={{background:W,border:'1px solid '+BDR,borderRadius:14,padding:aiImage?'0':'2rem',textAlign:'center',marginBottom:'1.25rem',overflow:'hidden'}}>
         {aiImage
           ? <img src={aiImage} alt="Your ring" style={{width:'100%',display:'block'}}/>
-          : <svg viewBox="0 0 220 200" fill="none" style={{width:'100%',maxWidth:200,display:'block',margin:'0 auto'}}><ellipse cx="110" cy="183" rx="55" ry="8" fill="rgba(0,0,0,.07)"/><ellipse cx="110" cy="168" rx="72" ry="17" fill={MC[R.metal]||'#EDE0CC'} stroke={G} strokeWidth="1.5"/><rect x="38" y="145" width="144" height="28" rx="14" fill={MC[R.metal]||'#EDE0CC'} stroke={G} strokeWidth="1.5"/><rect x="80" y="65" width="60" height="86" rx="6" fill={MC[R.metal]||'#EDE0CC'} stroke={G} strokeWidth="1.5"/><polygon points="110,12 148,56 110,82 72,56" fill={SC[R.stone]||'#F7F0E8'} stroke={G} strokeWidth="1.5"/><polygon points="110,12 148,56 110,42" fill={SC[R.stone]||'#F7F0E8'} stroke={G} strokeWidth="1" opacity=".7"/><polygon points="110,42 148,56 110,82" fill={SC[R.stone]||'#F7F0E8'} stroke={G} strokeWidth="1" opacity=".5"/><line x1="110" y1="7" x2="110" y2="19" stroke="white" strokeWidth="1.5" opacity=".9"/><line x1="104" y1="13" x2="116" y2="13" stroke="white" strokeWidth="1.5" opacity=".9"/></svg>
+          : <div style={{padding:'4rem 2rem',display:'flex',flexDirection:'column',alignItems:'center',gap:14}}><div style={{width:36,height:36,border:'3px solid '+BDR,borderTopColor:G,borderRadius:'50%',animation:'spin 1s linear infinite'}}/><div style={{fontSize:13,color:INKS}}>Creating a photorealistic preview of your ring…</div><style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style></div>
         }
         <div style={{padding:aiImage?'1rem':'0'}}>
           <div style={{fontFamily:'Georgia,serif',fontSize:20,fontWeight:300,color:INK,margin:aiImage?'0 0 4px':'1rem 0 4px'}}>{[R.carat,R.stone,R.shape,'in',R.metal].filter(Boolean).join(' ')}</div>
