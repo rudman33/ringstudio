@@ -53,6 +53,7 @@ export default function AdminDashboard(){
   const [showModal,setShowModal]=useState(false)
   const [editingOpt,setEditingOpt]=useState<any>(null)
   const [form,setForm]=useState({label:'',description:'',color_hex:'',image_url:''})
+  const [calendlyUrl,setCalendlyUrl]=useState('')
   const [uploading,setUploading]=useState(false)
   const fileRef=useRef<HTMLInputElement>(null)
 
@@ -66,6 +67,8 @@ export default function AdminDashboard(){
     ])
     if(inqRes.data) setInquiries(inqRes.data)
     if(optRes.data) setOptions(optRes.data)
+    const accRes = await fetch('/api/admin/account').then(r=>r.json())
+    if(accRes.data?.calendly_url) setCalendlyUrl(accRes.data.calendly_url)
     setLoading(false)
   }
 
@@ -105,6 +108,11 @@ export default function AdminDashboard(){
 
   function openEdit(opt:any){setEditingOpt(opt);setForm({label:opt.label,description:opt.description||'',color_hex:opt.color_hex||'',image_url:opt.image_url||''});setShowModal(true)}
   function openAdd(){setEditingOpt(null);setForm({label:'',description:'',color_hex:'',image_url:''});setShowModal(true)}
+
+  async function saveCalendly(){
+    await fetch('/api/admin/account',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({calendly_url:calendlyUrl})})
+    alert('Calendly link saved!')
+  }
 
   const btn=(col:string,txtCol?:string)=>({background:col,border:'none',borderRadius:7,padding:'7px 14px',fontSize:12,fontWeight:500,color:txtCol||'#fff',cursor:'pointer',fontFamily:'inherit'} as any)
   const inp2={width:'100%',padding:'9px 12px',fontSize:13,border:'1px solid '+BDRS,borderRadius:8,background:W,color:INK,outline:'none',fontFamily:'inherit',marginBottom:10} as any
@@ -207,10 +215,15 @@ export default function AdminDashboard(){
                 <input type="color" defaultValue="#B5966D" style={{height:38,width:100,padding:'2px 6px',border:'1px solid '+BDRS,borderRadius:8}}/>
               </div>
               <div style={{marginBottom:14}}>
+                <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Calendly booking link</label>
+                <input style={inp2} value={calendlyUrl} onChange={e=>setCalendlyUrl(e.target.value)} placeholder="https://calendly.com/your-name/consultation"/>
+                <div style={{fontSize:11,color:INKS,marginTop:-4,marginBottom:14}}>Customers will see a "Book a consultation" button after submitting an inquiry.</div>
+              </div>
+              <div style={{marginBottom:14}}>
                 <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Your builder URL</label>
                 <div style={{padding:'9px 12px',background:GP,border:'1px solid '+BDR,borderRadius:8,fontSize:13,color:GD}}>ringstudio-git-main-rudman33s-projects.vercel.app/demo</div>
               </div>
-              <button style={{...btn(G),padding:'10px 20px',fontSize:13}} onClick={()=>alert('Settings saved!')}>Save settings</button>
+              <button style={{...btn(G),padding:'10px 20px',fontSize:13}} onClick={saveCalendly}>Save settings</button>
             </div>
           </div>}
         </div>
