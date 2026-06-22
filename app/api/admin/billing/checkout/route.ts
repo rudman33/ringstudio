@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { stripe, PRICE_IDS, BillablePlan } from '../../../../../lib/stripe'
-
-const ACCOUNT_ID = '8433f769-632e-4426-b07b-0f5c9e7a2fe6'
+import { getAccountId } from '../../../../../lib/get-account'
 
 function getClient() {
   return createClient(
@@ -12,6 +11,9 @@ function getClient() {
 }
 
 export async function POST(req: NextRequest) {
+  const result = await getAccountId()
+  if ('error' in result) return NextResponse.json({ error: result.error }, { status: result.status })
+
   const { plan } = (await req.json()) as { plan: BillablePlan }
   const priceId = PRICE_IDS[plan]
   if (!priceId) {
@@ -22,7 +24,7 @@ export async function POST(req: NextRequest) {
   const { data: account, error } = await supabase
     .from('accounts')
     .select('*')
-    .eq('id', ACCOUNT_ID)
+    .eq('id', result.accountId)
     .single()
 
   if (error || !account) {
