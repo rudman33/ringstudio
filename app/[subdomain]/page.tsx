@@ -20,6 +20,7 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
   const [ref,setRef]=useState('')
   const [opts,setOpts]=useState<any>(DEFAULT)
   const [accountId,setAccountId]=useState<string>('8433f769-632e-4426-b07b-0f5c9e7a2fe6')
+  const [calendlyUrl,setCalendlyUrl]=useState<string>('')
   const [loading,setLoading]=useState(true)
   const fileInputRef=useRef<HTMLInputElement>(null)
   const [photoUploading,setPhotoUploading]=useState(false)
@@ -30,6 +31,7 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
       .then(json=>{
         if(json.data?.account?.id){
           setAccountId(json.data.account.id)
+          if(json.data.account.calendly_url) setCalendlyUrl(json.data.account.calendly_url)
           const o=json.data.options
           const mapped:any={}
           Object.keys(o).forEach(key=>{
@@ -92,7 +94,7 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
   const Grid=({items,sel,onSel,svg}:{items:any[],sel:string,onSel:(v:string)=>void,svg:(i:any)=>any})=><div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(130px,1fr))',gap:10}}>{items.map((item:any)=><div key={item.v} onClick={()=>onSel(item.v)} style={{background:W,border:sel===item.v?'2px solid '+G:'1px solid '+BDR,borderRadius:12,cursor:'pointer',overflow:'hidden'}}><div style={{width:'100%',aspectRatio:'1',background:GP,display:'flex',alignItems:'center',justifyContent:'center',...(item.img?{}:{padding:10})}}>{item.img?<img src={item.img} style={{width:'100%',height:'100%',objectFit:'cover'}}/>:svg(item)}</div><div style={{padding:'7px 10px 3px',fontSize:12,fontWeight:500,color:INK}}>{item.v}</div><div style={{padding:'0 10px 8px',fontSize:11,color:INKS}}>{item.sub}</div></div>)}</div>
 
   if(loading)return<div style={{minHeight:'100vh',background:'#F8F3EC',display:'flex',alignItems:'center',justifyContent:'center'}}><div style={{fontFamily:'Georgia,serif',fontSize:20,color:INKS}}>Loading your ring builder…</div></div>
-  if(done)return<div style={{minHeight:'100vh',background:'#F8F3EC',display:'flex',alignItems:'center',justifyContent:'center'}}><div style={{textAlign:'center',padding:'3rem 1rem'}}><div style={{fontSize:52,marginBottom:16}}>✨</div><div style={{fontFamily:'Georgia,serif',fontSize:30,fontWeight:300,color:INK,marginBottom:8}}>Inquiry submitted!</div><div style={{fontSize:14,color:INKS,lineHeight:1.7,maxWidth:360,margin:'0 auto 1.5rem'}}>A master jeweller will be in touch within 24 hours.</div><div style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'14px 20px',display:'inline-block'}}><div style={{fontSize:10,color:INKS,textTransform:'uppercase',letterSpacing:'.08em',marginBottom:4}}>Reference</div><div style={{fontFamily:'Georgia,serif',fontSize:20,color:G}}>{ref}</div></div></div></div>
+  if(done)return<div style={{minHeight:'100vh',background:'#F8F3EC',display:'flex',alignItems:'center',justifyContent:'center'}}><div style={{textAlign:'center',padding:'3rem 1rem'}}><div style={{fontSize:52,marginBottom:16}}>✨</div><div style={{fontFamily:'Georgia,serif',fontSize:30,fontWeight:300,color:INK,marginBottom:8}}>Inquiry submitted!</div><div style={{fontSize:14,color:INKS,lineHeight:1.7,maxWidth:360,margin:'0 auto 1.5rem'}}>A master jeweller will be in touch within 24 hours.</div><div style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'14px 20px',display:'inline-block'}}><div style={{fontSize:10,color:INKS,textTransform:'uppercase',letterSpacing:'.08em',marginBottom:4}}>Reference</div><div style={{fontFamily:'Georgia,serif',fontSize:20,color:G}}>{ref}</div></div>{calendlyUrl&&<a href={calendlyUrl} target="_blank" rel="noopener noreferrer" style={{display:'inline-block',marginTop:16,background:G,color:'#fff',padding:'12px 28px',borderRadius:8,textDecoration:'none',fontSize:14,fontWeight:500,fontFamily:'sans-serif'}}>Book a consultation</a>}</div></div>
 
   return<div style={{minHeight:'100vh',background:'#F8F3EC'}}>
     <div style={{padding:'0 1.25rem',height:50,background:W,borderBottom:'1px solid '+BDR,display:'flex',alignItems:'center',position:'sticky',top:0,zIndex:50}}><div style={{fontFamily:'Georgia,serif',fontSize:20,color:INK}}>Ring<span style={{color:G}}>Studio</span></div></div>

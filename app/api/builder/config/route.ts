@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
   const { data: account } = await supabase
     .from('accounts')
-    .select('id, business_name, logo_url, brand_color')
+    .select('id, business_name, logo_url, brand_color, calendly_url')
     .eq('subdomain', subdomain)
     .single()
 
