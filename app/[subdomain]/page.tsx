@@ -53,6 +53,20 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
       .finally(()=>setLoading(false))
   },[subdomain])
 
+  useEffect(()=>{
+    if(typeof window==='undefined')return
+    if(window.self===window.top)return
+    const send=()=>{
+      const h=document.body.scrollHeight
+      window.parent.postMessage({type:'ringstudio:resize',subdomain,height:h},'*')
+    }
+    send()
+    const ro=new ResizeObserver(()=>send())
+    ro.observe(document.body)
+    window.addEventListener('load',send)
+    return()=>{ro.disconnect();window.removeEventListener('load',send)}
+  },[subdomain])
+
   const set=(k:string,v:string)=>setR((p:any)=>({...p,[k]:v}))
   const emailValid=(e:string)=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)
   const phoneValid=(p:string)=>p.replace(/\D/g,'').length>=7

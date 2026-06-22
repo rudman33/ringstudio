@@ -10,6 +10,22 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: '/admin/:path*',
+        headers: [{ key: 'X-Frame-Options', value: 'DENY' }],
+      },
+      {
+        source: '/superadmin/:path*',
+        headers: [{ key: 'X-Frame-Options', value: 'DENY' }],
+      },
+      {
+        source: '/auth/:path*',
+        headers: [{ key: 'X-Frame-Options', value: 'DENY' }],
+      },
+    ]
+  },
 }
 
 export default nextConfig
