@@ -66,7 +66,15 @@ export async function POST(req: NextRequest) {
       }
     ) as any
 
-    const imageUrl = Array.isArray(output) ? output[0] : output
+    let imageUrl = Array.isArray(output) ? output[0] : output
+    
+    // Handle ReadableStream / FileOutput object from Replicate SDK
+    if (imageUrl && typeof imageUrl === 'object' && imageUrl.url) {
+      imageUrl = typeof imageUrl.url === 'function' ? imageUrl.url() : imageUrl.url
+    }
+    if (imageUrl && typeof imageUrl.toString === 'function' && typeof imageUrl !== 'string') {
+      imageUrl = imageUrl.toString()
+    }
 
     return NextResponse.json({ url: imageUrl, prompt })
   } catch (e: any) {
