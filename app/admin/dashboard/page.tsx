@@ -110,8 +110,24 @@ export default function AdminDashboard(){
   function openAdd(){setEditingOpt(null);setForm({label:'',description:'',color_hex:'',image_url:''});setShowModal(true)}
 
   async function saveCalendly(){
-    await fetch('/api/admin/account',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({calendly_url:calendlyUrl})})
-    alert('Calendly link saved!')
+    try{
+      const res=await fetch('/api/admin/account',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({calendly_url:calendlyUrl})})
+      const json=await res.json()
+      if(!res.ok){
+        alert('Could not save: '+(json.error||'Unknown error. Please try again.'))
+        return
+      }
+      // Re-fetch from the server to confirm what's actually saved, rather than trusting local state
+      const confirmRes=await fetch('/api/admin/account').then(r=>r.json())
+      if(confirmRes.data?.calendly_url!==calendlyUrl){
+        alert('Warning: the saved value doesn\'t match what you entered. Please check and try again.')
+        if(confirmRes.data?.calendly_url) setCalendlyUrl(confirmRes.data.calendly_url)
+        return
+      }
+      alert('Calendly link saved!')
+    }catch(e){
+      alert('Could not save: network error. Please check your connection and try again.')
+    }
   }
 
   const btn=(col:string,txtCol?:string)=>({background:col,border:'none',borderRadius:7,padding:'7px 14px',fontSize:12,fontWeight:500,color:txtCol||'#fff',cursor:'pointer',fontFamily:'inherit'} as any)
