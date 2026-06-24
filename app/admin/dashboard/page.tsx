@@ -55,7 +55,6 @@ export default function AdminDashboard(){
   const [form,setForm]=useState({label:'',description:'',color_hex:'',image_url:''})
   const [calendlyUrl,setCalendlyUrl]=useState('')
   const [account,setAccount]=useState<any>(null)
-  const [account,setAccount]=useState<any>(null)
   const [uploading,setUploading]=useState(false)
   const fileRef=useRef<HTMLInputElement>(null)
 
@@ -84,7 +83,7 @@ export default function AdminDashboard(){
     setUploading(true)
     const fd=new FormData()
     fd.append('file',file)
-    fd.append('path',`options/${ACCOUNT_ID}/${activeStep}/${Date.now()}-${file.name}`)
+    fd.append('path',`options/${account?.id}/${activeStep}/${Date.now()}-${file.name}`)
     const res=await fetch('/api/admin/upload',{method:'POST',body:fd}).then(r=>r.json())
     if(res.url) setForm(p=>({...p,image_url:res.url}))
     setUploading(false)
@@ -95,7 +94,7 @@ export default function AdminDashboard(){
     if(editingOpt){
       await fetch('/api/admin/options',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:editingOpt.id,...form})})
     } else {
-      await fetch('/api/admin/options',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...form,account_id:ACCOUNT_ID,step_key:activeStep,sort_order:99})})
+      await fetch('/api/admin/options',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...form,account_id:account?.id,step_key:activeStep,sort_order:99})})
     }
     setShowModal(false);setEditingOpt(null);setForm({label:'',description:'',color_hex:'',image_url:''})
     const res=await fetch('/api/admin/options').then(r=>r.json())
