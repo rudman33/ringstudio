@@ -1,5 +1,6 @@
 'use client'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 const G='#B5966D',GD='#8A6D48',GP='#FAF5EE',INK='#1C1612',INKS='#9C8470',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
 
@@ -9,9 +10,12 @@ const PLANS = [
   { key: 'enterprise', label: 'Enterprise', price: '$249', desc: 'Full feature set, priority support.' },
 ]
 
-export default function SignupPage() {
+function SignupForm() {
   const [form, setForm] = useState({ business_name: '', subdomain: '', email: '', password: '' })
-  const [plan, setPlan] = useState('starter')
+  const searchParams = useSearchParams()
+  const validPlans = ['starter', 'pro', 'enterprise']
+  const initialPlan = validPlans.includes(searchParams.get('plan') || '') ? searchParams.get('plan')! : 'starter'
+  const [plan, setPlan] = useState(initialPlan)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -130,5 +134,13 @@ export default function SignupPage() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#F8F3EC' }} />}>
+      <SignupForm />
+    </Suspense>
   )
 }
