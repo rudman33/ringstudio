@@ -48,7 +48,7 @@ export default function SuperAdmin(){
   return(
     <div style={{minHeight:'100vh',background:'#F8F3EC'}}>
       <div style={{height:50,background:W,borderBottom:'1px solid '+BDR,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 1.5rem',position:'sticky',top:0,zIndex:50}}>
-        <div style={{fontFamily:'Georgia,serif',fontSize:20,color:INK}}>Ring<span style={{color:G}}>Studio</span><span style={{fontSize:12,color:INKS,fontFamily:'sans-serif',marginLeft:8}}>Super Admin</span></div>
+        <div style={{fontFamily:'Georgia,serif',fontSize:20,color:INK}}>Jewelry<span style={{color:G}}>Engine</span><span style={{fontSize:12,color:INKS,fontFamily:'sans-serif',marginLeft:8}}>Super Admin</span></div>
         <button onClick={()=>window.location.href='/auth/login'} style={{background:'none',border:'1px solid '+BDR,borderRadius:7,padding:'5px 12px',fontSize:12,color:INKS,cursor:'pointer',fontFamily:'inherit'}}>Sign out</button>
       </div>
 
@@ -80,7 +80,7 @@ export default function SuperAdmin(){
                   {acc.business_name}
                   <span style={{fontSize:10,padding:'2px 8px',borderRadius:20,background:statusColors[acc.status]||'#eee',color:statusText[acc.status]||'#666'}}>{acc.status}</span>
                 </div>
-                <div style={{fontSize:12,color:INKS,marginTop:2}}>{acc.email} · {acc.subdomain}.ringstudio.com · {acc.plan} plan</div>
+                <div style={{fontSize:12,color:INKS,marginTop:2}}>{acc.email} · {acc.subdomain}.{process.env.NEXT_PUBLIC_APP_DOMAIN||'jeweleryengine.com'} · {acc.plan} plan</div>
               </div>
               <div style={{display:'flex',gap:6,flexShrink:0}}>
                 <a href={`/${acc.subdomain}`} target="_blank" style={{...btn('#F0EBE4',INK),textDecoration:'none',display:'inline-block'}}>View builder</a>

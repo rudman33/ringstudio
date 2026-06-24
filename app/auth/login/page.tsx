@@ -43,7 +43,7 @@ export default function LoginPage() {
 
   return (
     <div style={{minHeight:'100vh',background:'#F8F3EC',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'1rem'}}>
-      <div style={{fontFamily:'Georgia,serif',fontSize:24,color:INK,marginBottom:32}}>Ring<span style={{color:G}}>Studio</span></div>
+      <div style={{fontFamily:'Georgia,serif',fontSize:24,color:INK,marginBottom:32}}>Jewelry<span style={{color:G}}>Engine</span></div>
       <div style={{background:W,border:'1px solid '+BDR,borderRadius:16,padding:'2rem',width:'100%',maxWidth:380}}>
         <div style={{fontFamily:'Georgia,serif',fontSize:22,fontWeight:300,color:INK,marginBottom:6}}>
           {mode==='login'?'Sign in':'Reset password'}
@@ -73,7 +73,7 @@ export default function LoginPage() {
           {mode!=='login'&&<button onClick={()=>{setMode('login');setError('');setSuccess('')}} style={{background:'none',border:'none',fontSize:13,color:INKS,cursor:'pointer',fontFamily:'inherit'}}>← Back to sign in</button>}
         </div>
       </div>
-      <div style={{marginTop:16,fontSize:12,color:INKS}}>Ring Studio — White-label ring builder platform</div>
+      <div style={{marginTop:16,fontSize:12,color:INKS}}>Jewelry Engine — White-label ring builder platform</div>
     </div>
   )
 }

@@ -8,7 +8,7 @@ export async function sendNewInquiryEmail(inquiry: Inquiry, account: Account) {
   const adminUrl = `https://${account.subdomain}.${process.env.NEXT_PUBLIC_APP_DOMAIN}/admin/inquiries/${inquiry.id}`
 
   await resend.emails.send({
-    from: 'Ring Studio <notifications@ringstudio.com>',
+    from: 'Jewelry Engine <notifications@jeweleryengine.com>', // TODO: switch domain after verifying jeweleryengine.com in Resend
     to: account.notification_email || account.email,
     subject: `New ring inquiry from ${inquiry.customer_name} — ${inquiry.reference_code}`,
     html: `
@@ -31,7 +31,7 @@ export async function sendNewInquiryEmail(inquiry: Inquiry, account: Account) {
 // ── Confirmation email to customer ──
 export async function sendInquiryConfirmationEmail(inquiry: Inquiry, account: Account) {
   await resend.emails.send({
-    from: `${account.business_name} <notifications@ringstudio.com>`,
+    from: `${account.business_name} <notifications@jeweleryengine.com>`, // TODO: switch domain after verifying jeweleryengine.com in Resend // TODO: switch domain after verifying jeweleryengine.com in Resend
     to: inquiry.customer_email,
     subject: `We received your ring design — ${inquiry.reference_code}`,
     html: `

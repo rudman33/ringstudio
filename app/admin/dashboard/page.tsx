@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 
 const G='#B5966D',GD='#8A6D48',GP='#FAF5EE',INK='#1C1612',INKS='#9C8470',INKG='#C8B8A8',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
-const ACCOUNT_ID='8433f769-632e-4426-b07b-0f5c9e7a2fe6'
+const DOMAIN=process.env.NEXT_PUBLIC_APP_DOMAIN||'jeweleryengine.com'
 const STEP_KEYS=['stone','shape','carat','setting','metal','band','enh']
 const STEP_LABELS:any={stone:'Stone',shape:'Shape',carat:'Carat',setting:'Setting',metal:'Metal',band:'Band',enh:'Enhancements'}
 
@@ -54,6 +54,8 @@ export default function AdminDashboard(){
   const [editingOpt,setEditingOpt]=useState<any>(null)
   const [form,setForm]=useState({label:'',description:'',color_hex:'',image_url:''})
   const [calendlyUrl,setCalendlyUrl]=useState('')
+  const [account,setAccount]=useState<any>(null)
+  const [account,setAccount]=useState<any>(null)
   const [uploading,setUploading]=useState(false)
   const fileRef=useRef<HTMLInputElement>(null)
 
@@ -68,6 +70,7 @@ export default function AdminDashboard(){
     if(inqRes.data) setInquiries(inqRes.data)
     if(optRes.data) setOptions(optRes.data)
     const accRes = await fetch('/api/admin/account').then(r=>r.json())
+    if(accRes.data) setAccount(accRes.data)
     if(accRes.data?.calendly_url) setCalendlyUrl(accRes.data.calendly_url)
     setLoading(false)
   }
@@ -137,7 +140,7 @@ export default function AdminDashboard(){
   return(
     <div style={{minHeight:'100vh',background:'#F8F3EC'}}>
       <div style={{height:50,background:W,borderBottom:'1px solid '+BDR,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 1.5rem',position:'sticky',top:0,zIndex:50}}>
-        <div style={{fontFamily:'Georgia,serif',fontSize:20,color:INK}}>Ring<span style={{color:G}}>Studio</span><span style={{fontSize:12,color:INKS,fontFamily:'sans-serif',marginLeft:8}}>Admin</span></div>
+        <div style={{fontFamily:'Georgia,serif',fontSize:20,color:INK}}>Jewelry<span style={{color:G}}>Engine</span><span style={{fontSize:12,color:INKS,fontFamily:'sans-serif',marginLeft:8}}>Admin</span></div>
         <div style={{display:'flex',gap:12,alignItems:'center'}}>
           <a href="/demo" target="_blank" style={{fontSize:12,color:INKS,textDecoration:'none'}}>View builder ↗</a>
           <button onClick={()=>window.location.href='/auth/login'} style={{background:'none',border:'1px solid '+BDR,borderRadius:7,padding:'5px 12px',fontSize:12,color:INKS,cursor:'pointer',fontFamily:'inherit'}}>Sign out</button>
@@ -146,8 +149,8 @@ export default function AdminDashboard(){
       <div style={{display:'flex'}}>
         <div style={{width:200,flexShrink:0,background:W,borderRight:'1px solid '+BDR,minHeight:'calc(100vh - 50px)'}}>
           <div style={{padding:'16px',borderBottom:'1px solid '+BDR}}>
-            <div style={{fontSize:13,fontWeight:500,color:INK}}>Ring Studio Demo</div>
-            <div style={{fontSize:11,color:INKS,marginTop:2}}>demo.ringstudio.com</div>
+            <div style={{fontSize:13,fontWeight:500,color:INK}}>{account?.business_name||'Loading…'}</div>
+            <div style={{fontSize:11,color:INKS,marginTop:2}}>{account?.subdomain?`${account.subdomain}.${DOMAIN}`:''}</div>
           </div>
           {[{id:'dashboard',label:'Dashboard',icon:'📊'},{id:'inquiries',label:'Inquiries'+(newCount?' ('+newCount+')':''),icon:'📬'},{id:'options',label:'Ring options',icon:'💎'},{id:'settings',label:'Settings',icon:'⚙️'}].map(item=>(
             <div key={item.id} onClick={()=>setPage(item.id)} style={{display:'flex',alignItems:'center',gap:8,padding:'9px 16px',fontSize:13,color:page===item.id?G:INKS,cursor:'pointer',borderLeft:page===item.id?'2px solid '+G:'2px solid transparent',background:page===item.id?GP:'transparent',fontWeight:page===item.id?500:400}}>
@@ -220,7 +223,7 @@ export default function AdminDashboard(){
             <div style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'20px'}}>
               <div style={{marginBottom:14}}>
                 <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Business name</label>
-                <input style={inp2} defaultValue="Ring Studio Demo"/>
+                <input style={inp2} value={account?.business_name||''} readOnly/>
               </div>
               <div style={{marginBottom:14}}>
                 <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Notification email</label>
@@ -237,7 +240,7 @@ export default function AdminDashboard(){
               </div>
               <div style={{marginBottom:14}}>
                 <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Your builder URL</label>
-                <div style={{padding:'9px 12px',background:GP,border:'1px solid '+BDR,borderRadius:8,fontSize:13,color:GD}}>ringstudio-git-main-rudman33s-projects.vercel.app/demo</div>
+                <div style={{padding:'9px 12px',background:GP,border:'1px solid '+BDR,borderRadius:8,fontSize:13,color:GD}}>{account?.subdomain?`${DOMAIN}/${account.subdomain}`:'Loading…'}</div>
               </div>
               <button style={{...btn(G),padding:'10px 20px',fontSize:13}} onClick={saveCalendly}>Save settings</button>
             </div>
