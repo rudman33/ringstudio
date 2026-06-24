@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, use, useRef } from 'react'
 
-const G='#B5966D',GD='#8A6D48',GP='#FAF5EE',INK='#1C1612',INKS='#9C8470',INKG='#C8B8A8',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
+const G='var(--brand)',GD='var(--brand-dark)',GP='var(--brand-pale)',INK='#1C1612',INKS='#9C8470',INKG='#C8B8A8',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
 const SC:any={Diamond:'#E8F4FF',Sapphire:'#C5D8F0',Emerald:'#C8E8D0',Ruby:'#FAD0D0',Morganite:'#FAE0EC',Moissanite:'#EEEDFE'}
 const MC:any={'Yellow Gold':'#E8C45A','White Gold':'#D8D8E4','Rose Gold':'#E8A48A','Platinum':'#C4C4D4','Two-Tone':'#D4B870'}
 const SZ:any={'0.5 ct':18,'0.75 ct':22,'1.0 ct':27,'1.5 ct':31,'2.0 ct':35,'2.5+ ct':38}
