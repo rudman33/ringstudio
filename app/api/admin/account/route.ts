@@ -29,9 +29,14 @@ export async function PATCH(req: NextRequest) {
 
   const body = await req.json()
   const supabase = getClient()
+  const updatePayload: Record<string, unknown> = {}
+  if (body.calendly_url !== undefined) updatePayload.calendly_url = body.calendly_url
+  if (body.notification_email !== undefined) updatePayload.notification_email = body.notification_email
+  if (body.brand_color !== undefined) updatePayload.brand_color = body.brand_color
+
   const { data, error } = await supabase
     .from('accounts')
-    .update({ calendly_url: body.calendly_url })
+    .update(updatePayload)
     .eq('id', result.accountId)
     .select()
     .single()

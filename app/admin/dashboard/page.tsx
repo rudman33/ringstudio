@@ -55,6 +55,8 @@ export default function AdminDashboard(){
   const [form,setForm]=useState({label:'',description:'',color_hex:'',image_url:''})
   const [calendlyUrl,setCalendlyUrl]=useState('')
   const [account,setAccount]=useState<any>(null)
+  const [notifEmail,setNotifEmail]=useState('')
+  const [brandColor,setBrandColor]=useState('#B5966D')
   const [uploading,setUploading]=useState(false)
   const fileRef=useRef<HTMLInputElement>(null)
 
@@ -71,6 +73,8 @@ export default function AdminDashboard(){
     const accRes = await fetch('/api/admin/account').then(r=>r.json())
     if(accRes.data) setAccount(accRes.data)
     if(accRes.data?.calendly_url) setCalendlyUrl(accRes.data.calendly_url)
+    if(accRes.data?.notification_email) setNotifEmail(accRes.data.notification_email)
+    if(accRes.data?.brand_color) setBrandColor(accRes.data.brand_color)
     setLoading(false)
   }
 
@@ -111,9 +115,45 @@ export default function AdminDashboard(){
   function openEdit(opt:any){setEditingOpt(opt);setForm({label:opt.label,description:opt.description||'',color_hex:opt.color_hex||'',image_url:opt.image_url||''});setShowModal(true)}
   function openAdd(){setEditingOpt(null);setForm({label:'',description:'',color_hex:'',image_url:''});setShowModal(true)}
 
+  const [billingLoading,setBillingLoading]=useState('')
+
+  async function startCheckout(plan:string){
+    setBillingLoading(plan)
+    try{
+      const res=await fetch('/api/admin/billing/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan})})
+      const json=await res.json()
+      if(!res.ok||!json.data?.url){
+        alert('Could not start checkout: '+(json.error||'Unknown error. Please try again.'))
+        setBillingLoading('')
+        return
+      }
+      window.location.href=json.data.url
+    }catch(e){
+      alert('Could not start checkout: network error. Please try again.')
+      setBillingLoading('')
+    }
+  }
+
+  async function openBillingPortal(){
+    setBillingLoading('portal')
+    try{
+      const res=await fetch('/api/admin/billing/portal',{method:'POST'})
+      const json=await res.json()
+      if(!res.ok||!json.data?.url){
+        alert('Could not open billing portal: '+(json.error||'Unknown error.'))
+        setBillingLoading('')
+        return
+      }
+      window.location.href=json.data.url
+    }catch(e){
+      alert('Could not open billing portal: network error. Please try again.')
+      setBillingLoading('')
+    }
+  }
+
   async function saveCalendly(){
     try{
-      const res=await fetch('/api/admin/account',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({calendly_url:calendlyUrl})})
+      const res=await fetch('/api/admin/account',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({calendly_url:calendlyUrl,notification_email:notifEmail,brand_color:brandColor})})
       const json=await res.json()
       if(!res.ok){
         alert('Could not save: '+(json.error||'Unknown error. Please try again.'))
@@ -121,12 +161,17 @@ export default function AdminDashboard(){
       }
       // Re-fetch from the server to confirm what's actually saved, rather than trusting local state
       const confirmRes=await fetch('/api/admin/account').then(r=>r.json())
-      if(confirmRes.data?.calendly_url!==calendlyUrl){
-        alert('Warning: the saved value doesn\'t match what you entered. Please check and try again.')
-        if(confirmRes.data?.calendly_url) setCalendlyUrl(confirmRes.data.calendly_url)
+      const mismatch=confirmRes.data?.calendly_url!==calendlyUrl||confirmRes.data?.notification_email!==notifEmail||confirmRes.data?.brand_color!==brandColor
+      if(mismatch){
+        alert('Warning: the saved values don\'t fully match what you entered. Please check and try again.')
+        if(confirmRes.data){
+          if(confirmRes.data.calendly_url) setCalendlyUrl(confirmRes.data.calendly_url)
+          if(confirmRes.data.notification_email) setNotifEmail(confirmRes.data.notification_email)
+          if(confirmRes.data.brand_color) setBrandColor(confirmRes.data.brand_color)
+        }
         return
       }
-      alert('Calendly link saved!')
+      alert('Settings saved!')
     }catch(e){
       alert('Could not save: network error. Please check your connection and try again.')
     }
@@ -226,11 +271,11 @@ export default function AdminDashboard(){
               </div>
               <div style={{marginBottom:14}}>
                 <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Notification email</label>
-                <input style={inp2} defaultValue="rudman33@hotmail.com"/>
+                <input style={inp2} value={notifEmail} onChange={e=>setNotifEmail(e.target.value)} placeholder="you@example.com"/>
               </div>
               <div style={{marginBottom:14}}>
                 <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Brand color</label>
-                <input type="color" defaultValue="#B5966D" style={{height:38,width:100,padding:'2px 6px',border:'1px solid '+BDRS,borderRadius:8}}/>
+                <input type="color" value={brandColor} onChange={e=>setBrandColor(e.target.value)} style={{height:38,width:100,padding:'2px 6px',border:'1px solid '+BDRS,borderRadius:8}}/>
               </div>
               <div style={{marginBottom:14}}>
                 <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Calendly booking link</label>
@@ -242,6 +287,49 @@ export default function AdminDashboard(){
                 <div style={{padding:'9px 12px',background:GP,border:'1px solid '+BDR,borderRadius:8,fontSize:13,color:GD}}>{account?.subdomain?`${DOMAIN}/${account.subdomain}`:'Loading…'}</div>
               </div>
               <button style={{...btn(G),padding:'10px 20px',fontSize:13}} onClick={saveCalendly}>Save settings</button>
+            </div>
+
+            <div style={{fontFamily:'Georgia,serif',fontSize:18,fontWeight:300,color:INK,margin:'24px 0 4px'}}>Billing</div>
+            <div style={{fontSize:13,color:INKS,marginBottom:14}}>
+              Current plan: <span style={{fontWeight:500,color:INK,textTransform:'capitalize'}}>{account?.plan||'—'}</span>
+              {' · '}Status: <span style={{fontWeight:500,color:INK,textTransform:'capitalize'}}>{account?.status||'—'}</span>
+              {account?.trial_ends_at&&account?.status==='trial'&&<> · Trial ends {new Date(account.trial_ends_at).toLocaleDateString()}</>}
+            </div>
+            <div style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'20px'}}>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10,marginBottom:16}}>
+                  <div style={{border:account?.plan==='starter'?'2px solid '+G:'1px solid '+BDR,background:account?.plan==='starter'?GP:W,borderRadius:10,padding:'14px 10px',textAlign:'center'}}>
+                    <div style={{fontSize:13,fontWeight:500,color:INK}}>Starter</div>
+                    <div style={{fontFamily:'Georgia,serif',fontSize:20,color:G,margin:'4px 0'}}>$49<span style={{fontSize:11,color:INKS}}>/mo</span></div>
+                    {account?.plan==='starter'
+                      ?<div style={{fontSize:11,color:'#0F6E56',fontWeight:500,padding:'8px 0'}}>Current plan</div>
+                      :<button onClick={()=>startCheckout('starter')} disabled={!!billingLoading} style={{...btn(G),width:'100%',padding:'7px 0',fontSize:12,opacity:billingLoading?.6:1}}>{billingLoading==='starter'?'Loading…':'Choose'}</button>
+                    }
+                  </div>
+                  <div style={{border:account?.plan==='pro'?'2px solid '+G:'1px solid '+BDR,background:account?.plan==='pro'?GP:W,borderRadius:10,padding:'14px 10px',textAlign:'center'}}>
+                    <div style={{fontSize:13,fontWeight:500,color:INK}}>Pro</div>
+                    <div style={{fontFamily:'Georgia,serif',fontSize:20,color:G,margin:'4px 0'}}>$99<span style={{fontSize:11,color:INKS}}>/mo</span></div>
+                    {account?.plan==='pro'
+                      ?<div style={{fontSize:11,color:'#0F6E56',fontWeight:500,padding:'8px 0'}}>Current plan</div>
+                      :<button onClick={()=>startCheckout('pro')} disabled={!!billingLoading} style={{...btn(G),width:'100%',padding:'7px 0',fontSize:12,opacity:billingLoading?.6:1}}>{billingLoading==='pro'?'Loading…':'Choose'}</button>
+                    }
+                  </div>
+                  <div style={{border:account?.plan==='enterprise'?'2px solid '+G:'1px solid '+BDR,background:account?.plan==='enterprise'?GP:W,borderRadius:10,padding:'14px 10px',textAlign:'center'}}>
+                    <div style={{fontSize:13,fontWeight:500,color:INK}}>Enterprise</div>
+                    <div style={{fontFamily:'Georgia,serif',fontSize:20,color:G,margin:'4px 0'}}>$249<span style={{fontSize:11,color:INKS}}>/mo</span></div>
+                    {account?.plan==='enterprise'
+                      ?<div style={{fontSize:11,color:'#0F6E56',fontWeight:500,padding:'8px 0'}}>Current plan</div>
+                      :<button onClick={()=>startCheckout('enterprise')} disabled={!!billingLoading} style={{...btn(G),width:'100%',padding:'7px 0',fontSize:12,opacity:billingLoading?.6:1}}>{billingLoading==='enterprise'?'Loading…':'Choose'}</button>
+                    }
+                  </div>
+              </div>
+              {account?.stripe_customer_id&&
+                <button onClick={openBillingPortal} disabled={!!billingLoading} style={{...btn('#F0EBE4',INK),padding:'9px 18px',fontSize:13,opacity:billingLoading?.6:1}}>
+                  {billingLoading==='portal'?'Loading…':'Manage billing →'}
+                </button>
+              }
+              {!account?.stripe_customer_id&&
+                <div style={{fontSize:12,color:INKS}}>Choose a plan above to add billing details.</div>
+              }
             </div>
           </div>}
         </div>
