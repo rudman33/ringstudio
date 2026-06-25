@@ -240,7 +240,7 @@ export default function MarketingPage(){
               </div>
             ))}
           </div>
-          <div style={{fontSize:12,color:INKS,marginTop:28}}>Every plan includes a 14-day free trial. No setup fees.</div>
+          <div style={{fontSize:12,color:INKS,marginTop:28}}>Every plan includes a 14-day free trial. No setup fees. Need more designs? Extra packs of 50 are $25.</div>
         </div>
       </Reveal>
 
