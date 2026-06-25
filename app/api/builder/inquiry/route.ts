@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
         
         ${body.notes ? `<h3 style="color:#B5966D;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 8px">Notes</h3><p style="font-size:13px;color:#5A4A3A;background:#FAF5EE;padding:12px;border-radius:8px;margin:0 0 24px">${body.notes}</p>` : ''}
         
-        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://ringstudio-git-main-rudman33s-projects.vercel.app'}/admin/dashboard" style="display:inline-block;background:#B5966D;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500">View in admin panel</a>
+        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://jeweleryengine.com'}/admin/dashboard" style="display:inline-block;background:#B5966D;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500">View in admin panel</a>
       </div>
     </div>
   `
