@@ -9,9 +9,9 @@ const BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
 const MONO='ui-monospace,"SF Mono",Menlo,monospace'
 
 const PLANS=[
-  {key:'starter',label:'Starter',price:49,desc:'For a single studio finding its footing online.',features:['1 white-label ring builder','AI photorealistic previews','Unlimited inquiries','Email notifications']},
-  {key:'pro',label:'Pro',price:99,desc:'For studios actively growing their online inquiries.',features:['Everything in Starter','Custom brand colour','Calendly booking integration','Priority support'],popular:true},
-  {key:'enterprise',label:'Enterprise',price:249,desc:'For multi-location or high-volume jewelers.',features:['Everything in Pro','Multiple builder configurations','Dedicated onboarding','Custom integrations']},
+  {key:'starter',label:'Starter',price:49,desc:'For a single studio finding its footing online.',features:['1 white-label ring builder','Up to 100 AI designs/month','Unlimited inquiries','Email notifications']},
+  {key:'pro',label:'Pro',price:99,desc:'For studios actively growing their online inquiries.',features:['Everything in Starter','Up to 500 AI designs/month','Custom brand colour','Calendly booking integration','Priority support'],popular:true},
+  {key:'enterprise',label:'Enterprise',price:249,desc:'For multi-location or high-volume jewelers.',features:['Everything in Pro','Unlimited AI designs','Multiple builder configurations','Dedicated onboarding','Custom integrations']},
 ]
 const STEPS=[
   {n:1,title:'Customer designs',desc:'They pick the stone, shape, and metal, right on your website. Your AI renders a photorealistic preview of that exact ring before they ever pick up the phone.'},
