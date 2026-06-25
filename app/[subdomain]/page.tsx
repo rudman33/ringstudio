@@ -105,7 +105,7 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
   async function generateAiImage(){
     setAiGenerating(true);setAiError('')
     try{
-      const res=await fetch('/api/builder/visualize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({selections:R})})
+      const res=await fetch('/api/builder/visualize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({selections:R,account_id:accountId})})
       const json=await res.json()
       if(json.url) setAiImage(json.url)
       else setAiError('Could not generate image. Please try again.')
@@ -115,13 +115,12 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
     setAiGenerating(false)
   }
 
-  useEffect(()=>{
-    if(cur===13 && !aiImage && !aiGenerating){
-      generateAiImage()
-    }
-  },[cur])
+  const [inquirySubmitted,setInquirySubmitted]=useState(false)
+  const [submittingInquiry,setSubmittingInquiry]=useState(false)
 
-  const submit=async()=>{
+  async function createInquiry(){
+    if(inquirySubmitted||submittingInquiry)return
+    setSubmittingInquiry(true)
     try{
       const res=await fetch('/api/builder/inquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({account_id:accountId,customer_name:(contact.first+' '+contact.last).trim(),customer_email:contact.email,customer_phone:contact.phone||null,ring_type:R.type||null,selections:R,ring_size:prefs.size||null,band_width:prefs.width||null,budget_range:prefs.budget||null,timeline:prefs.timeline||null,notes:prefs.notes||null,source_url:window.location.href})})
       const json=await res.json()
@@ -129,6 +128,17 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
     }catch(e){
       setRef('RNG-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*9000)+1000))
     }
+    setInquirySubmitted(true)
+    setSubmittingInquiry(false)
+  }
+
+  async function revealRing(){
+    if(inquirySubmitted||submittingInquiry)return
+    await createInquiry()
+    generateAiImage()
+  }
+
+  const finish=()=>{
     setDone(true)
   }
 
@@ -163,23 +173,31 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
       {cur===12&&<div><SH n={12} t="Review your design" s="Everything looks right?"/><div style={{background:W,border:'1px solid '+BDR,borderRadius:12,overflow:'hidden',marginBottom:'1.25rem'}}>{[['Name',(contact.first+' '+contact.last).trim()],['Email',contact.email],['Phone',contact.phone||'—'],['Ring type',R.type],['Stone',R.stone],['Shape',R.shape],['Carat',R.carat],['Setting',R.setting],['Metal',R.metal],['Band',R.band],['Enhancements',enh.length?enh.join(', '):'None'],['Budget',prefs.budget||'—'],['Timeline',prefs.timeline||'—']].map(([k,v])=><div key={k} style={{display:'flex',justifyContent:'space-between',padding:'9px 16px',borderBottom:'1px solid '+BDR,fontSize:13}}><span style={{color:INKS}}>{k}</span><span style={{fontWeight:500,color:INK,textAlign:'right',maxWidth:'60%'}}>{v||'—'}</span></div>)}</div><Nav lbl="See my ring →"/></div>}
       {cur===13&&<div><SH n={13} t="Your ring" s="Here's your custom design."/>
 
-      <div style={{background:W,border:'1px solid '+BDR,borderRadius:14,padding:aiImage?'0':'2rem',textAlign:'center',marginBottom:'1.25rem',overflow:'hidden'}}>
-        {aiImage
-          ? <img src={aiImage} alt="Your ring" style={{width:'100%',display:'block'}}/>
-          : <div style={{padding:'4rem 2rem',display:'flex',flexDirection:'column',alignItems:'center',gap:14}}><div style={{width:36,height:36,border:'3px solid '+BDR,borderTopColor:G,borderRadius:'50%',animation:'spin 1s linear infinite'}}/><div style={{fontSize:13,color:INKS}}>Creating a photorealistic preview of your ring…</div><style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style></div>
-        }
-        <div style={{padding:aiImage?'1rem':'0'}}>
-          <div style={{fontFamily:'Georgia,serif',fontSize:20,fontWeight:300,color:INK,margin:aiImage?'0 0 4px':'1rem 0 4px'}}>{[R.carat,R.stone,R.shape,'in',R.metal].filter(Boolean).join(' ')}</div>
-          <div style={{fontSize:13,color:INKS}}>{[R.setting,'setting'].filter(Boolean).join(' ')}</div>
-          {aiImage&&<div style={{fontSize:11,color:INKG,marginTop:6}}>AI-generated visualization — actual ring may vary</div>}
-        </div>
-      </div>
+      {!inquirySubmitted
+        ? <div style={{background:W,border:'1px solid '+BDR,borderRadius:14,padding:'3rem 2rem',textAlign:'center',marginBottom:'1.25rem'}}>
+            <div style={{fontSize:32,marginBottom:14}}>💍</div>
+            <div style={{fontSize:13,color:INKS,marginBottom:20,maxWidth:320,margin:'0 auto 20px'}}>Submit your design to see an AI-generated photo of your exact ring.</div>
+            <button onClick={revealRing} disabled={submittingInquiry} style={{width:'100%',background:submittingInquiry?INKG:'#1C1612',border:'none',borderRadius:8,padding:13,fontSize:14,fontWeight:500,color:'#fff',cursor:submittingInquiry?'default':'pointer',fontFamily:'inherit'}}>{submittingInquiry?'Submitting…':'✨ See my ring & submit inquiry'}</button>
+          </div>
+        : <>
+          <div style={{background:W,border:'1px solid '+BDR,borderRadius:14,padding:aiImage?'0':'2rem',textAlign:'center',marginBottom:'1.25rem',overflow:'hidden'}}>
+            {aiImage
+              ? <img src={aiImage} alt="Your ring" style={{width:'100%',display:'block'}}/>
+              : aiError
+                ? <div style={{padding:'3rem 2rem',display:'flex',flexDirection:'column',alignItems:'center',gap:10}}><div style={{fontSize:32}}>💍</div><div style={{fontSize:13,color:INKS,maxWidth:280}}>We couldn't generate a preview right now, but your design has been submitted.</div></div>
+                : <div style={{padding:'4rem 2rem',display:'flex',flexDirection:'column',alignItems:'center',gap:14}}><div style={{width:36,height:36,border:'3px solid '+BDR,borderTopColor:G,borderRadius:'50%',animation:'spin 1s linear infinite'}}/><div style={{fontSize:13,color:INKS}}>Creating a photorealistic preview of your ring…</div><style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style></div>
+            }
+            <div style={{padding:aiImage?'1rem':'0'}}>
+              <div style={{fontFamily:'Georgia,serif',fontSize:20,fontWeight:300,color:INK,margin:aiImage?'0 0 4px':'1rem 0 4px'}}>{[R.carat,R.stone,R.shape,'in',R.metal].filter(Boolean).join(' ')}</div>
+              <div style={{fontSize:13,color:INKS}}>{[R.setting,'setting'].filter(Boolean).join(' ')}</div>
+              {aiImage&&<div style={{fontSize:11,color:INKG,marginTop:6}}>AI-generated visualization — actual ring may vary</div>}
+            </div>
+          </div>
 
-      <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:'1.25rem'}}>{[R.type,R.stone,R.shape,R.carat,R.setting,R.metal,R.band].filter(Boolean).map((t:any)=><span key={t} style={{fontSize:11,padding:'3px 10px',borderRadius:20,background:GP,color:GD,border:'1px solid '+BDR}}>{t}</span>)}</div>
-
-      {!aiImage&&<button onClick={generateAiImage} disabled={aiGenerating} style={{width:'100%',background:aiGenerating?INKG:'#1C1612',border:'none',borderRadius:8,padding:13,fontSize:14,fontWeight:500,color:'#fff',cursor:aiGenerating?'default':'pointer',marginBottom:8,fontFamily:'inherit'}}>{aiGenerating?'✨ Generating your ring photo...':'✨ See a realistic photo of your ring'}</button>}
-      {aiError&&<div style={{fontSize:12,color:'#C0392B',marginBottom:8,textAlign:'center'}}>{aiError}</div>}
-      <button onClick={submit} style={{width:'100%',background:G,border:'none',borderRadius:8,padding:13,fontSize:14,fontWeight:500,color:'#fff',cursor:'pointer',marginBottom:8,fontFamily:'inherit'}}>✉️ Submit inquiry</button><div style={{marginTop:16}}><button style={bb} onClick={prev}>← Back</button></div></div>}
+          <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:'1.25rem'}}>{[R.type,R.stone,R.shape,R.carat,R.setting,R.metal,R.band].filter(Boolean).map((t:any)=><span key={t} style={{fontSize:11,padding:'3px 10px',borderRadius:20,background:GP,color:GD,border:'1px solid '+BDR}}>{t}</span>)}</div>
+        </>
+      }
+      {inquirySubmitted&&<button onClick={finish} style={{width:'100%',background:G,border:'none',borderRadius:8,padding:13,fontSize:14,fontWeight:500,color:'#fff',cursor:'pointer',marginBottom:8,fontFamily:'inherit'}}>✓ Done</button>}<div style={{marginTop:16}}><button style={bb} onClick={prev}>← Back</button></div></div>}
     </div>
   </div>
 }

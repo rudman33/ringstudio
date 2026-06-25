@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Replicate from 'replicate'
+import { checkAndConsumeDesignCredit } from '../../../../lib/design-limits'
 
 const replicate = new Replicate({ auth: process.env.REPLICATE_API_TOKEN })
 
@@ -51,6 +52,19 @@ function buildPrompt(sel: any) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
+
+    if (!body.account_id) {
+      return NextResponse.json({ error: 'Missing account_id' }, { status: 400 })
+    }
+
+    const limitCheck = await checkAndConsumeDesignCredit(body.account_id)
+    if (!limitCheck.allowed) {
+      return NextResponse.json(
+        { error: 'We\'re unable to generate a preview right now. Please contact the jeweler directly to continue.' },
+        { status: 429 }
+      )
+    }
+
     const prompt = buildPrompt(body.selections || {})
 
     const output = await replicate.run(
