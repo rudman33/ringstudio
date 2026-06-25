@@ -41,6 +41,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  // Look up the actual jeweler account so notifications go to the right inbox
+  const { data: account } = await supabase
+    .from('accounts')
+    .select('notification_email, email, business_name')
+    .eq('id', body.account_id)
+    .single()
+
+  const jewelerEmail = account?.notification_email || account?.email
+
   // Email to jeweler
   const sel = body.selections || {}
   const jewelerHtml = `
@@ -92,20 +101,24 @@ export async function POST(request: NextRequest) {
 
   // Send emails (don't block the response if they fail)
   try {
-    await Promise.all([
-      resend.emails.send({
+    const emailPromises = []
+    if (jewelerEmail) {
+      emailPromises.push(resend.emails.send({
         from: 'Jewelry Engine <notifications@jeweleryengine.com>',
-        to: ['rudman33@hotmail.com'],
+        to: [jewelerEmail],
         subject: `New ring inquiry — ${reference_code}`,
         html: jewelerHtml,
-      }),
-      resend.emails.send({
-        from: 'Jewelry Engine <notifications@jeweleryengine.com>',
-        to: [body.customer_email],
-        subject: `Your ring inquiry — ${reference_code}`,
-        html: customerHtml,
-      })
-    ])
+      }))
+    } else {
+      console.error('No notification email on file for account', body.account_id)
+    }
+    emailPromises.push(resend.emails.send({
+      from: 'Jewelry Engine <notifications@jeweleryengine.com>',
+      to: [body.customer_email],
+      subject: `Your ring inquiry — ${reference_code}`,
+      html: customerHtml,
+    }))
+    await Promise.all(emailPromises)
   } catch (emailError) {
     console.error('Email error:', emailError)
   }
