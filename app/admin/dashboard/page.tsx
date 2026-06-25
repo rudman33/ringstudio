@@ -134,6 +134,23 @@ export default function AdminDashboard(){
     }
   }
 
+  async function buyDesignPack(){
+    setBillingLoading('designs')
+    try{
+      const res=await fetch('/api/admin/billing/buy-designs',{method:'POST'})
+      const json=await res.json()
+      if(!res.ok||!json.data?.url){
+        alert('Could not start purchase: '+(json.error||'Unknown error.'))
+        setBillingLoading('')
+        return
+      }
+      window.location.href=json.data.url
+    }catch(e){
+      alert('Could not start purchase: network error. Please try again.')
+      setBillingLoading('')
+    }
+  }
+
   async function openBillingPortal(){
     setBillingLoading('portal')
     try{
@@ -295,6 +312,36 @@ export default function AdminDashboard(){
               {' · '}Status: <span style={{fontWeight:500,color:INK,textTransform:'capitalize'}}>{account?.status||'—'}</span>
               {account?.trial_ends_at&&account?.status==='trial'&&<> · Trial ends {new Date(account.trial_ends_at).toLocaleDateString()}</>}
             </div>
+
+            <div style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'16px 20px',marginBottom:16}}>
+              {(()=>{
+                const limits:any={starter:100,pro:500,enterprise:Infinity,trial:100,free:100}
+                const limit=limits[account?.plan]??100
+                const used=account?.designs_used_this_period||0
+                const extra=account?.extra_designs_purchased||0
+                const allowance=limit===Infinity?Infinity:limit+extra
+                const pct=allowance===Infinity?0:Math.min(100,Math.round((used/allowance)*100))
+                return(
+                  <div>
+                    <div style={{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:8}}>
+                      <span style={{color:INKS}}>AI designs this period</span>
+                      <span style={{fontWeight:500,color:INK}}>{used} / {allowance===Infinity?'Unlimited':allowance}</span>
+                    </div>
+                    {allowance!==Infinity&&
+                      <div style={{height:6,borderRadius:4,background:'#F0EBE4',overflow:'hidden',marginBottom:12}}>
+                        <div style={{height:'100%',width:`${pct}%`,background:pct>=100?'#C0392B':G,transition:'width .3s ease'}}/>
+                      </div>
+                    }
+                    {allowance!==Infinity&&pct>=80&&
+                      <button onClick={buyDesignPack} disabled={!!billingLoading} style={{...btn('#F0EBE4',INK),padding:'8px 16px',fontSize:12,opacity:billingLoading?.6:1}}>
+                        {billingLoading==='designs'?'Loading…':'+ Buy 50 more designs — $25'}
+                      </button>
+                    }
+                  </div>
+                )
+              })()}
+            </div>
+
             <div style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'20px'}}>
               <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10,marginBottom:16}}>
                   <div style={{border:account?.plan==='starter'?'2px solid '+G:'1px solid '+BDR,background:account?.plan==='starter'?GP:W,borderRadius:10,padding:'14px 10px',textAlign:'center'}}>

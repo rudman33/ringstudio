@@ -33,6 +33,21 @@ export async function POST(req: NextRequest) {
         const session = event.data.object as Stripe.Checkout.Session
         const accountId = session.metadata?.account_id || session.client_reference_id
 
+        // One-time design-pack purchase (not a subscription)
+        if (accountId && session.mode === 'payment' && session.metadata?.type === 'design_pack') {
+          const { data: acc } = await supabase
+            .from('accounts')
+            .select('extra_designs_purchased')
+            .eq('id', accountId)
+            .single()
+          const current = acc?.extra_designs_purchased || 0
+          await supabase
+            .from('accounts')
+            .update({ extra_designs_purchased: current + 50 })
+            .eq('id', accountId)
+          break
+        }
+
         if (accountId && session.subscription && session.customer) {
           const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
           const priceId = subscription.items.data[0]?.price.id
