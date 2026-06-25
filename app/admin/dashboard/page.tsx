@@ -55,6 +55,7 @@ export default function AdminDashboard(){
   const [form,setForm]=useState({label:'',description:'',color_hex:'',image_url:''})
   const [calendlyUrl,setCalendlyUrl]=useState('')
   const [account,setAccount]=useState<any>(null)
+  const [embedCopied,setEmbedCopied]=useState(false)
   const [notifEmail,setNotifEmail]=useState('')
   const [brandColor,setBrandColor]=useState('#B5966D')
   const [uploading,setUploading]=useState(false)
@@ -304,6 +305,42 @@ export default function AdminDashboard(){
                 <div style={{padding:'9px 12px',background:GP,border:'1px solid '+BDR,borderRadius:8,fontSize:13,color:GD}}>{account?.subdomain?`${DOMAIN}/${account.subdomain}`:'Loading…'}</div>
               </div>
               <button style={{...btn(G),padding:'10px 20px',fontSize:13}} onClick={saveCalendly}>Save settings</button>
+            </div>
+
+            <div style={{fontFamily:'Georgia,serif',fontSize:18,fontWeight:300,color:INK,margin:'24px 0 4px'}}>Embed on your website</div>
+            <div style={{fontSize:13,color:INKS,marginBottom:14}}>Copy this snippet into any page on your site — WordPress, HighLevel, or plain HTML. The box automatically resizes itself as customers move through the builder.</div>
+            <div style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'20px'}}>
+              {account?.subdomain
+                ?(()=>{
+                  const embedCode=`<div id="jewelry-engine-embed"></div>
+<script>
+(function(){
+  var subdomain = "${account.subdomain}";
+  var baseUrl = "https://${DOMAIN}";
+  var container = document.getElementById("jewelry-engine-embed");
+  var iframe = document.createElement("iframe");
+  iframe.src = baseUrl + "/" + subdomain;
+  iframe.style.width = "100%";
+  iframe.style.border = "none";
+  iframe.style.minHeight = "600px";
+  iframe.style.display = "block";
+  container.appendChild(iframe);
+  window.addEventListener("message", function(e){
+    if(e.data && e.data.type === "ringstudio:resize" && e.data.subdomain === subdomain){
+      iframe.style.height = e.data.height + "px";
+    }
+  });
+})();
+</script>`
+                  return(
+                    <>
+                      <pre style={{background:GP,border:'1px solid '+BDR,borderRadius:8,padding:'14px',fontSize:11,fontFamily:'ui-monospace,SF Mono,Menlo,monospace',color:INK,overflowX:'auto' as const,whiteSpace:'pre' as const,marginBottom:12}}>{embedCode}</pre>
+                      <button onClick={()=>{navigator.clipboard.writeText(embedCode);setEmbedCopied(true);setTimeout(()=>setEmbedCopied(false),2000)}} style={{...btn(embedCopied?'#0F6E56':G),padding:'9px 18px',fontSize:13}}>{embedCopied?'✓ Copied!':'Copy embed code'}</button>
+                    </>
+                  )
+                })()
+                :<div style={{fontSize:13,color:INKS}}>Loading…</div>
+              }
             </div>
 
             <div style={{fontFamily:'Georgia,serif',fontSize:18,fontWeight:300,color:INK,margin:'24px 0 4px'}}>Billing</div>
