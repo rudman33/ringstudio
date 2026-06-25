@@ -94,13 +94,13 @@ export async function POST(request: NextRequest) {
   try {
     await Promise.all([
       resend.emails.send({
-        from: 'Jewelry Engine <notifications@send.jeweleryengine.com>',
+        from: 'Jewelry Engine <notifications@jeweleryengine.com>',
         to: ['rudman33@hotmail.com'],
         subject: `New ring inquiry — ${reference_code}`,
         html: jewelerHtml,
       }),
       resend.emails.send({
-        from: 'Jewelry Engine <notifications@send.jeweleryengine.com>',
+        from: 'Jewelry Engine <notifications@jeweleryengine.com>',
         to: [body.customer_email],
         subject: `Your ring inquiry — ${reference_code}`,
         html: customerHtml,
