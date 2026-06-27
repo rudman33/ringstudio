@@ -138,6 +138,25 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
     generateAiImage()
   }
 
+  useEffect(()=>{
+    if(cur===13 && inquirySubmitted && !aiImage && !aiGenerating && !aiError){
+      generateAiImage()
+    }
+  },[cur,inquirySubmitted,aiImage])
+
+  function regeneratePhoto(){
+    if(aiGenerating)return
+    setAiImage('')
+    setAiError('')
+  }
+
+  function changeSelections(){
+    if(aiGenerating)return
+    setAiImage('')
+    setAiError('')
+    setCur(4)
+  }
+
   const finish=()=>{
     setDone(true)
   }
@@ -197,6 +216,10 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
           <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:'1.25rem'}}>{[R.type,R.stone,R.shape,R.carat,R.setting,R.metal,R.band].filter(Boolean).map((t:any)=><span key={t} style={{fontSize:11,padding:'3px 10px',borderRadius:20,background:GP,color:GD,border:'1px solid '+BDR}}>{t}</span>)}</div>
         </>
       }
+      {inquirySubmitted&&aiImage&&<div style={{display:'flex',gap:8,marginBottom:8}}>
+        <button onClick={regeneratePhoto} disabled={aiGenerating} style={{flex:1,background:'transparent',border:'1px solid '+BDRS,borderRadius:8,padding:11,fontSize:13,color:INK,cursor:aiGenerating?'default':'pointer',fontFamily:'inherit',opacity:aiGenerating?.5:1}}>✨ Different photo</button>
+        <button onClick={changeSelections} disabled={aiGenerating} style={{flex:1,background:'transparent',border:'1px solid '+BDRS,borderRadius:8,padding:11,fontSize:13,color:INK,cursor:aiGenerating?'default':'pointer',fontFamily:'inherit',opacity:aiGenerating?.5:1}}>✏️ Change selections</button>
+      </div>}
       {inquirySubmitted&&<button onClick={finish} style={{width:'100%',background:G,border:'none',borderRadius:8,padding:13,fontSize:14,fontWeight:500,color:'#fff',cursor:'pointer',marginBottom:8,fontFamily:'inherit'}}>✓ Done</button>}<div style={{marginTop:16}}><button style={bb} onClick={prev}>← Back</button></div></div>}
     </div>
   </div>
