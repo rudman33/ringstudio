@@ -204,7 +204,7 @@ export default function AdminDashboard(){
       <div style={{height:50,background:W,borderBottom:'1px solid '+BDR,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 1.5rem',position:'sticky',top:0,zIndex:50}}>
         <div style={{fontFamily:'Georgia,serif',fontSize:20,color:INK}}>Jewelry<span style={{color:G}}>Engine</span><span style={{fontSize:12,color:INKS,fontFamily:'sans-serif',marginLeft:8}}>Admin</span></div>
         <div style={{display:'flex',gap:12,alignItems:'center'}}>
-          <a href="/demo" target="_blank" style={{fontSize:12,color:INKS,textDecoration:'none'}}>View builder ↗</a>
+          <a href={account?.subdomain?`/${account.subdomain}`:'/demo'} target="_blank" style={{fontSize:12,color:INKS,textDecoration:'none'}}>View builder ↗</a>
           <button onClick={()=>window.location.href='/auth/login'} style={{background:'none',border:'1px solid '+BDR,borderRadius:7,padding:'5px 12px',fontSize:12,color:INKS,cursor:'pointer',fontFamily:'inherit'}}>Sign out</button>
         </div>
       </div>
