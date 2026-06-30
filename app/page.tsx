@@ -168,7 +168,7 @@ export default function MarketingPage(){
           <div className={mounted?'rise-3':''} style={{opacity:mounted?undefined:0,marginTop:32}}>
             <div style={{display:'flex',gap:12,flexWrap:'wrap' as const,justifyContent:'center'}}>
               <a href="/auth/signup" style={ctaBtn}>Start your free trial</a>
-              <a href="/demo" target="_blank" style={ctaBtnGhostDark}>See a live builder ↗</a>
+              <a href="/test" target="_blank" style={ctaBtnGhostDark}>See a live builder ↗</a>
             </div>
             <div style={{fontSize:12,color:'rgba(244,238,228,0.45)',marginTop:16}}>14 days free. Cancel anytime during your trial.</div>
           </div>
@@ -325,7 +325,7 @@ export default function MarketingPage(){
               <div>© {new Date().getFullYear()} Jewelry Engine</div>
               <div style={{display:'flex',gap:18}}>
                 <a href="/auth/login" style={{color:'rgba(244,238,228,0.6)',textDecoration:'none'}}>Sign in</a>
-                <a href="/demo" target="_blank" style={{color:'rgba(244,238,228,0.6)',textDecoration:'none'}}>Live demo</a>
+                <a href="/test" target="_blank" style={{color:'rgba(244,238,228,0.6)',textDecoration:'none'}}>Live demo</a>
               </div>
             </div>
           </div>
