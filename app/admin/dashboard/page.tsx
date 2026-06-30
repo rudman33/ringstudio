@@ -58,6 +58,8 @@ export default function AdminDashboard(){
   const [embedCopied,setEmbedCopied]=useState(false)
   const [notifEmail,setNotifEmail]=useState('')
   const [brandColor,setBrandColor]=useState('#B5966D')
+  const [ghlApiKey,setGhlApiKey]=useState('')
+  const [ghlLocationId,setGhlLocationId]=useState('')
   const [uploading,setUploading]=useState(false)
   const fileRef=useRef<HTMLInputElement>(null)
 
@@ -74,6 +76,8 @@ export default function AdminDashboard(){
     const accRes = await fetch('/api/admin/account').then(r=>r.json())
     if(accRes.data) setAccount(accRes.data)
     if(accRes.data?.calendly_url) setCalendlyUrl(accRes.data.calendly_url)
+    if(accRes.data?.ghl_api_key) setGhlApiKey(accRes.data.ghl_api_key)
+    if(accRes.data?.ghl_location_id) setGhlLocationId(accRes.data.ghl_location_id)
     if(accRes.data?.notification_email) setNotifEmail(accRes.data.notification_email)
     if(accRes.data?.brand_color) setBrandColor(accRes.data.brand_color)
     setLoading(false)
@@ -171,7 +175,7 @@ export default function AdminDashboard(){
 
   async function saveCalendly(){
     try{
-      const res=await fetch('/api/admin/account',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({calendly_url:calendlyUrl,notification_email:notifEmail,brand_color:brandColor})})
+      const res=await fetch('/api/admin/account',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({calendly_url:calendlyUrl,notification_email:notifEmail,brand_color:brandColor,ghl_api_key:ghlApiKey,ghl_location_id:ghlLocationId})})
       const json=await res.json()
       if(!res.ok){
         alert('Could not save: '+(json.error||'Unknown error. Please try again.'))
@@ -179,13 +183,15 @@ export default function AdminDashboard(){
       }
       // Re-fetch from the server to confirm what's actually saved, rather than trusting local state
       const confirmRes=await fetch('/api/admin/account').then(r=>r.json())
-      const mismatch=confirmRes.data?.calendly_url!==calendlyUrl||confirmRes.data?.notification_email!==notifEmail||confirmRes.data?.brand_color!==brandColor
+      const mismatch=confirmRes.data?.calendly_url!==calendlyUrl||confirmRes.data?.notification_email!==notifEmail||confirmRes.data?.brand_color!==brandColor||confirmRes.data?.ghl_api_key!==ghlApiKey||confirmRes.data?.ghl_location_id!==ghlLocationId
       if(mismatch){
         alert('Warning: the saved values don\'t fully match what you entered. Please check and try again.')
         if(confirmRes.data){
           if(confirmRes.data.calendly_url) setCalendlyUrl(confirmRes.data.calendly_url)
           if(confirmRes.data.notification_email) setNotifEmail(confirmRes.data.notification_email)
           if(confirmRes.data.brand_color) setBrandColor(confirmRes.data.brand_color)
+          if(confirmRes.data.ghl_api_key) setGhlApiKey(confirmRes.data.ghl_api_key)
+          if(confirmRes.data.ghl_location_id) setGhlLocationId(confirmRes.data.ghl_location_id)
         }
         return
       }
@@ -299,6 +305,12 @@ export default function AdminDashboard(){
                 <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Calendly booking link</label>
                 <input style={inp2} value={calendlyUrl} onChange={e=>setCalendlyUrl(e.target.value)} placeholder="https://calendly.com/your-name/consultation"/>
                 <div style={{fontSize:11,color:INKS,marginTop:-4,marginBottom:14}}>Customers will see a "Book a consultation" button after submitting an inquiry.</div>
+              </div>
+              <div style={{marginBottom:14}}>
+                <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>GoHighLevel integration (optional)</label>
+                <input style={inp2} value={ghlApiKey} onChange={e=>setGhlApiKey(e.target.value)} placeholder="Private Integration Token"/>
+                <input style={{...inp2,marginBottom:4}} value={ghlLocationId} onChange={e=>setGhlLocationId(e.target.value)} placeholder="Location ID"/>
+                <div style={{fontSize:11,color:INKS,marginTop:0,marginBottom:14}}>Connect your GoHighLevel account to automatically push every new inquiry as a contact. Find both in your GHL account under Settings &gt; Private Integrations.</div>
               </div>
               <div style={{marginBottom:14}}>
                 <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Your builder URL</label>

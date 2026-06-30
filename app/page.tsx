@@ -19,10 +19,11 @@ const STEPS=[
   {n:3,title:'You close the sale',desc:'Follow up, send a quote, and book a consultation through your own Calendly link. The customer already knows exactly what they want.'},
 ]
 const FEATURES=[
-  {code:'EMBED · 01',title:'White-label embed',desc:'Looks like your site, not ours. Drop it into WordPress, HighLevel, or anywhere else — your logo, your colours, your domain.'},
+  {code:'EMBED · 01',title:'Embeds anywhere',desc:'WordPress, Wix, Squarespace, GoHighLevel, Webflow, or any site that takes HTML — your logo, your colours, your domain.'},
   {code:'AI · 02',title:'Photorealistic preview',desc:'Every design renders into a real photo of that exact ring, automatically, before the customer submits an inquiry.'},
   {code:'INBOX · 03',title:'Built-in inquiries',desc:'Every inquiry arrives with the full design, contact details, and notes already organised — no spreadsheets.'},
   {code:'STOCK · 04',title:'Your own ring options',desc:'Stock the builder with your real stones, settings, and metals. Customers only see what you actually carry.'},
+  {code:'CRM · 05',title:'GoHighLevel sync',desc:'Already on GoHighLevel? Every inquiry is pushed straight into your contacts automatically — no manual entry.'},
 ]
 
 const SAMPLE_INQUIRIES=[
@@ -114,6 +115,8 @@ export default function MarketingPage(){
         .grid-3col > div, .grid-2col > div{opacity:0;transform:translateY(18px);transition:opacity .5s cubic-bezier(.2,.8,.2,1),transform .5s cubic-bezier(.2,.8,.2,1)}
         .reveal-in .grid-3col > div:nth-child(1), .reveal-in .grid-2col > div:nth-child(1){transition-delay:0ms}
         .reveal-in .grid-3col > div:nth-child(2), .reveal-in .grid-2col > div:nth-child(2){transition-delay:100ms}
+        .reveal-in .grid-3col > div:nth-child(4){transition-delay:300ms}
+        .reveal-in .grid-3col > div:nth-child(5){transition-delay:400ms}
         .reveal-in .grid-3col > div:nth-child(3){transition-delay:200ms}
         .reveal-in .grid-3col > div, .reveal-in .grid-2col > div{opacity:1;transform:translateY(0)}
         @media (prefers-reduced-motion: reduce){
@@ -268,12 +271,25 @@ export default function MarketingPage(){
         <div style={{...wrap,padding:'40px 24px 104px',textAlign:'center' as const}}>
           <div style={eyebrowLight}>Built for jewelers</div>
           <h2 style={h2}>Everything your studio needs, <em style={{fontStyle:'italic',color:G}}>nothing</em> it doesn’t.</h2>
-          <div className="grid-2col" style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:16,marginTop:44,textAlign:'left' as const}}>
+          <div className="grid-3col" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16,marginTop:44,textAlign:'left' as const}}>
             {FEATURES.map(f=>(
               <div key={f.title} className="feature-card" style={{background:W,border:'1px solid '+BDR,borderRadius:14,padding:'26px 26px'}}>
                 <div style={{fontFamily:MONO,fontSize:10,color:G,letterSpacing:'.08em',marginBottom:10}}>{f.code}</div>
                 <div style={{fontSize:15,fontWeight:500,color:INK,marginBottom:6}}>{f.title}</div>
                 <div style={{fontSize:13,color:INKS,lineHeight:1.6}}>{f.desc}</div>
+                {f.code==='EMBED · 01'&&
+                  <div style={{display:'flex',alignItems:'center',gap:14,marginTop:16,paddingTop:16,borderTop:'1px solid '+BDR,flexWrap:'wrap' as const}}>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill={INKS} role="img" aria-label="WordPress"><title>WordPress</title><path d="M21.469 6.825c.84 1.537 1.318 3.3 1.318 5.175 0 3.979-2.156 7.456-5.363 9.325l3.295-9.527c.615-1.54.82-2.771.82-3.864 0-.405-.026-.78-.07-1.11m-7.981.105c.647-.03 1.232-.105 1.232-.105.582-.075.514-.93-.067-.899 0 0-1.755.135-2.88.135-1.064 0-2.85-.15-2.85-.15-.585-.03-.661.855-.075.885 0 0 .54.061 1.125.09l1.68 4.605-2.37 7.08L5.354 6.9c.649-.03 1.234-.1 1.234-.1.585-.075.516-.93-.065-.896 0 0-1.746.138-2.874.138-.2 0-.438-.008-.69-.015C4.911 3.15 8.235 1.215 12 1.215c2.809 0 5.365 1.072 7.286 2.833-.046-.003-.091-.009-.141-.009-1.06 0-1.812.923-1.812 1.914 0 .89.513 1.643 1.06 2.531.411.72.89 1.643.89 2.977 0 .915-.354 1.994-.821 3.479l-1.075 3.585-3.9-11.61.001.014zM12 22.784c-1.059 0-2.081-.153-3.048-.437l3.237-9.406 3.315 9.087c.024.053.05.101.078.149-1.12.393-2.325.609-3.582.609M1.211 12c0-1.564.336-3.05.935-4.39L7.29 21.709C3.694 19.96 1.212 16.271 1.211 12M12 0C5.385 0 0 5.385 0 12s5.385 12 12 12 12-5.385 12-12S18.615 0 12 0"/></svg>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill={INKS} role="img" aria-label="Wix"><title>Wix</title><path d="m0 7.354 2.113 9.292h.801a1.54 1.54 0 0 0 1.506-1.218l1.351-6.34a.171.171 0 0 1 .167-.137c.08 0 .15.058.167.137l1.352 6.34a1.54 1.54 0 0 0 1.506 1.218h.805l2.113-9.292h-.565c-.62 0-1.159.43-1.296 1.035l-1.26 5.545-1.106-5.176a1.76 1.76 0 0 0-2.19-1.324c-.639.176-1.113.716-1.251 1.365l-1.094 5.127-1.26-5.537A1.33 1.33 0 0 0 .563 7.354H0zm13.992 0a.951.951 0 0 0-.951.95v8.342h.635a.952.952 0 0 0 .951-.95V7.353h-.635zm1.778 0 3.158 4.66-3.14 4.632h1.325c.368 0 .712-.181.918-.486l1.756-2.59a.12.12 0 0 1 .197 0l1.754 2.59c.206.305.55.486.918.486h1.326l-3.14-4.632L24 7.354h-1.326c-.368 0-.712.181-.918.486l-1.772 2.617a.12.12 0 0 1-.197 0L18.014 7.84a1.108 1.108 0 0 0-.918-.486H15.77z"/></svg>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill={INKS} role="img" aria-label="Squarespace"><title>Squarespace</title><path d="M22.655 8.719c-1.802-1.801-4.726-1.801-6.564 0l-7.351 7.35c-.45.45-.45 1.2 0 1.65.45.449 1.2.449 1.65 0l7.351-7.351c.899-.899 2.362-.899 3.264 0 .9.9.9 2.364 0 3.264l-7.239 7.239c.9.899 2.362.899 3.263 0l5.589-5.589c1.836-1.838 1.836-4.763.037-6.563zm-2.475 2.437c-.451-.45-1.201-.45-1.65 0l-7.354 7.389c-.9.899-2.361.899-3.262 0-.45-.45-1.2-.45-1.65 0s-.45 1.2 0 1.649c1.801 1.801 4.726 1.801 6.564 0l7.351-7.35c.449-.487.449-1.239.001-1.688zm-2.439-7.35c-1.801-1.801-4.726-1.801-6.564 0l-7.351 7.351c-.45.449-.45 1.199 0 1.649s1.2.45 1.65 0l7.395-7.351c.9-.899 2.371-.899 3.27 0 .451.45 1.201.45 1.65 0 .421-.487.421-1.199-.029-1.649h-.021zm-2.475 2.437c-.45-.45-1.2-.45-1.65 0l-7.351 7.389c-.899.9-2.363.9-3.265 0-.9-.899-.9-2.363 0-3.264l7.239-7.239c-.9-.9-2.362-.9-3.263 0L1.35 8.719c-1.8 1.8-1.8 4.725 0 6.563 1.801 1.801 4.725 1.801 6.564 0l7.35-7.351c.451-.488.451-1.238 0-1.688h.002z"/></svg>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill={INKS} role="img" aria-label="Webflow"><title>Webflow</title><path d="m24 4.515-7.658 14.97H9.149l3.205-6.204h-.144C9.566 16.713 5.621 18.973 0 19.485v-6.118s3.596-.213 5.71-2.435H0V4.515h6.417v5.278l.144-.001 2.622-5.277h4.854v5.244h.144l2.72-5.244H24Z"/></svg>
+                  </div>
+                }
+                {f.code==='CRM · 05'&&
+                  <div style={{marginTop:16,paddingTop:16,borderTop:'1px solid '+BDR}}>
+                    <span style={{display:'inline-block',fontFamily:MONO,fontSize:11,fontWeight:700,letterSpacing:'.04em',color:G,background:CREAM_PALE,border:'1px solid '+BDR,borderRadius:6,padding:'4px 10px'}}>GoHighLevel</span>
+                  </div>
+                }
               </div>
             ))}
           </div>

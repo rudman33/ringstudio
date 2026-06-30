@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
   // Look up the actual jeweler account so notifications go to the right inbox
   const { data: account } = await supabase
     .from('accounts')
-    .select('notification_email, email, business_name')
+    .select('notification_email, email, business_name, ghl_api_key, ghl_location_id')
     .eq('id', body.account_id)
     .single()
 
@@ -98,6 +98,40 @@ export async function POST(request: NextRequest) {
       </div>
     </div>
   `
+
+  // Push lead to GoHighLevel as a contact, if the jeweler has connected their GHL account
+  if (account?.ghl_api_key && account?.ghl_location_id) {
+    try {
+      const nameParts = (body.customer_name || '').trim().split(' ')
+      const firstName = nameParts[0] || body.customer_name || ''
+      const lastName = nameParts.slice(1).join(' ') || ''
+      const ringSummary = [body.ring_type, sel.stone, sel.shape, sel.carat, sel.setting, sel.metal, sel.band].filter(Boolean).join(' ')
+
+      const ghlRes = await fetch('https://services.leadconnectorhq.com/contacts/', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${account.ghl_api_key}`,
+          'Content-Type': 'application/json',
+          'Version': '2021-07-28',
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email: body.customer_email,
+          phone: body.customer_phone || undefined,
+          locationId: account.ghl_location_id,
+          tags: ['Jewelry Engine Lead'],
+          source: `Jewelry Engine — ${reference_code}`,
+        }),
+      })
+      if (!ghlRes.ok) {
+        const ghlErrText = await ghlRes.text()
+        console.error('GHL contact push failed:', ghlRes.status, ghlErrText)
+      }
+    } catch (ghlError) {
+      console.error('GHL integration error:', ghlError)
+    }
+  }
 
   // Send emails (don't block the response if they fail)
   try {

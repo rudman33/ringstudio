@@ -32,6 +32,8 @@ export async function PATCH(req: NextRequest) {
   const updatePayload: Record<string, unknown> = {}
   if (body.calendly_url !== undefined) updatePayload.calendly_url = body.calendly_url
   if (body.notification_email !== undefined) updatePayload.notification_email = body.notification_email
+  if (body.ghl_api_key !== undefined) updatePayload.ghl_api_key = body.ghl_api_key
+  if (body.ghl_location_id !== undefined) updatePayload.ghl_location_id = body.ghl_location_id
   if (body.brand_color !== undefined) updatePayload.brand_color = body.brand_color
 
   const { data, error } = await supabase
