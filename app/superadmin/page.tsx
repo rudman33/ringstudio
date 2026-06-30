@@ -89,6 +89,16 @@ export default function SuperAdmin(){
               </div>
             </div>
             <div style={{fontSize:11,color:INKG,marginTop:8}}>Created {new Date(acc.created_at).toLocaleDateString()} · Trial ends {acc.trial_ends_at?new Date(acc.trial_ends_at).toLocaleDateString():'—'}</div>
+            <div style={{fontSize:11,color:INKG,marginTop:4}}>
+              {(() => {
+                const PLAN_LIMITS: any = { starter: 100, pro: 500, enterprise: Infinity, trial: 100, free: 100 }
+                const limit = PLAN_LIMITS[acc.plan] ?? 100
+                const used = acc.designs_used_this_period || 0
+                const extra = acc.extra_designs_purchased || 0
+                const limitLabel = limit === Infinity ? 'unlimited' : `${used}/${limit + extra}`
+                return `${limitLabel} designs used this period · ${acc.inquiry_count || 0} total inquiries`
+              })()}
+            </div>
           </div>
         ))}
       </div>

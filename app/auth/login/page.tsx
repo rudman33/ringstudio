@@ -27,7 +27,12 @@ export default function LoginPage() {
       })
       const data = await res.json()
       if(!res.ok){setError(data.error||'Invalid email or password');setLoading(false);return}
-      window.location.href = '/admin/dashboard'
+      const superadminEmail = process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL
+      if(superadminEmail && email.trim().toLowerCase() === superadminEmail.toLowerCase()){
+        window.location.href = '/superadmin'
+      } else {
+        window.location.href = '/admin/dashboard'
+      }
     } catch(e) {
       setError('Something went wrong. Please try again.')
       setLoading(false)

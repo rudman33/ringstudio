@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { requireSuperadmin } from '../../../../lib/require-superadmin'
 
 function getClient() {
   return createClient(
@@ -9,16 +10,38 @@ function getClient() {
 }
 
 export async function GET() {
+  const auth = await requireSuperadmin()
+  if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
   const supabase = getClient()
   const { data, error } = await supabase
     .from('accounts')
     .select('*')
     .order('created_at', { ascending: false })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ data })
+
+  // Tally inquiry counts per account
+  const { data: inquiryRows } = await supabase
+    .from('inquiries')
+    .select('account_id')
+
+  const inquiryCounts: Record<string, number> = {}
+  for (const row of inquiryRows || []) {
+    inquiryCounts[row.account_id] = (inquiryCounts[row.account_id] || 0) + 1
+  }
+
+  const enriched = (data || []).map((acc: any) => ({
+    ...acc,
+    inquiry_count: inquiryCounts[acc.id] || 0,
+  }))
+
+  return NextResponse.json({ data: enriched })
 }
 
 export async function POST(req: NextRequest) {
+  const auth = await requireSuperadmin()
+  if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
   const body = await req.json()
   const supabase = getClient()
 
@@ -59,6 +82,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  const auth = await requireSuperadmin()
+  if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
   const body = await req.json()
   const supabase = getClient()
   const { data, error } = await supabase
