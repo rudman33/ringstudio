@@ -42,7 +42,12 @@ export default function LoginPage() {
   const handleReset = async () => {
     if(!email){setError('Please enter your email.');return}
     setLoading(true);setError('')
-    setSuccess('If that email exists, a reset link has been sent.')
+    try{
+      await fetch('/api/auth/forgot-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})})
+      setSuccess('If that email exists, a reset link has been sent.')
+    }catch(e){
+      setError('Something went wrong. Please try again.')
+    }
     setLoading(false)
   }
 
