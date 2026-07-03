@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, use, useRef } from 'react'
 
-const G='var(--brand)',GD='var(--brand-dark)',GP='var(--brand-pale)',INK='#1C1612',INKS='#9C8470',INKG='#C8B8A8',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
+const G='var(--brand)',GD='var(--brand-dark)',GP='var(--brand-pale)',INK='var(--ink)',INKS='#9C8470',INKG='#C8B8A8',W='var(--bg)',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
 const SC:any={Diamond:'#E8F4FF',Sapphire:'#C5D8F0',Emerald:'#C8E8D0',Ruby:'#FAD0D0',Morganite:'#FAE0EC',Moissanite:'#EEEDFE'}
 const MC:any={'Yellow Gold':'#E8C45A','White Gold':'#D8D8E4','Rose Gold':'#E8A48A','Platinum':'#C4C4D4','Two-Tone':'#D4B870'}
 const SZ:any={'0.5 ct':18,'0.75 ct':22,'1.0 ct':27,'1.5 ct':31,'2.0 ct':35,'2.5+ ct':38}
@@ -35,6 +35,17 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
         if(json.data?.account?.id){
           setAccountId(json.data.account.id)
           if(json.data.account.calendly_url) setCalendlyUrl(json.data.account.calendly_url)
+          // Apply account branding as CSS variables
+          const brandColor = json.data.account.brand_color || '#B5966D'
+          const bgColor = json.data.account.bg_color || 'transparent'
+          const textColor = json.data.account.text_color || '#1C1612'
+          const buttonColor = json.data.account.button_color || brandColor
+          const r = document.documentElement
+          r.style.setProperty('--brand', brandColor)
+          r.style.setProperty('--brand-dark', buttonColor)
+          r.style.setProperty('--brand-pale', brandColor + '1a')
+          r.style.setProperty('--bg', bgColor)
+          r.style.setProperty('--ink', textColor)
           const o=json.data.options
           const mapped:any={}
           Object.keys(o).forEach(key=>{
@@ -172,7 +183,7 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
   if(done)return<div style={{minHeight:'100vh',background:'#F8F3EC',display:'flex',alignItems:'center',justifyContent:'center'}}><div style={{textAlign:'center',padding:'3rem 1rem'}}><div style={{fontSize:52,marginBottom:16}}>✨</div><div style={{fontFamily:'Georgia,serif',fontSize:30,fontWeight:300,color:INK,marginBottom:8}}>Inquiry submitted!</div><div style={{fontSize:14,color:INKS,lineHeight:1.7,maxWidth:360,margin:'0 auto 1.5rem'}}>A master jeweller will be in touch within 24 hours.</div><div style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'14px 20px',display:'inline-block'}}><div style={{fontSize:10,color:INKS,textTransform:'uppercase',letterSpacing:'.08em',marginBottom:4}}>Reference</div><div style={{fontFamily:'Georgia,serif',fontSize:20,color:G}}>{ref}</div></div>{calendlyUrl&&<a href={calendlyUrl} target="_blank" rel="noopener noreferrer" style={{display:'inline-block',marginTop:16,background:G,color:'#fff',padding:'12px 28px',borderRadius:8,textDecoration:'none',fontSize:14,fontWeight:500,fontFamily:'sans-serif'}}>Book a consultation</a>}</div></div>
 
   return<div style={{minHeight:'100vh',background:'#F8F3EC'}}>
-    <div style={{padding:'0 1.25rem',height:50,background:W,borderBottom:'1px solid '+BDR,display:'flex',alignItems:'center',position:'sticky',top:0,zIndex:50}}><div style={{fontFamily:'Georgia,serif',fontSize:20,color:INK}}>Jewelry<span style={{color:G}}>Engine</span></div></div>
+    
     <div style={{maxWidth:660,margin:'0 auto',padding:'1.5rem 1rem 4rem'}}>
       <div style={{display:'flex',alignItems:'center',gap:4,marginBottom:'1.5rem',flexWrap:'wrap'}}>{Array.from({length:T}).map((_,i)=><div key={i} style={{width:i+1===cur?18:5,height:5,borderRadius:i+1===cur?3:'50%',background:i<cur?G:INKG,transition:'all .25s',flexShrink:0}}/>)}<span style={{fontSize:11,color:INKG,marginLeft:6}}>Step {cur} of {T}</span></div>
       {cur>1&&[R.type,R.stone,R.shape,R.metal].filter(Boolean).length>0&&<div style={{display:'flex',alignItems:'center',gap:12,padding:'10px 14px',background:W,border:'1px solid '+BDR,borderRadius:12,marginBottom:'1.25rem'}}><span style={{fontSize:22}}>💍</span><div style={{flex:1,minWidth:0}}><div style={{fontSize:10,color:INKG,textTransform:'uppercase',letterSpacing:'.07em'}}>Your ring so far</div><div style={{fontSize:13,fontWeight:500,color:INK,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{[R.type,R.stone,R.shape,R.metal].filter(Boolean).join(' · ')}</div></div></div>}

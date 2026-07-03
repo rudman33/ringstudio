@@ -34,6 +34,9 @@ export async function PATCH(req: NextRequest) {
   if (body.notification_email !== undefined) updatePayload.notification_email = body.notification_email
   if (body.ghl_api_key !== undefined) updatePayload.ghl_api_key = body.ghl_api_key
   if (body.ghl_location_id !== undefined) updatePayload.ghl_location_id = body.ghl_location_id
+  if (body.bg_color !== undefined) updatePayload.bg_color = body.bg_color
+  if (body.text_color !== undefined) updatePayload.text_color = body.text_color
+  if (body.button_color !== undefined) updatePayload.button_color = body.button_color
   if (body.brand_color !== undefined) updatePayload.brand_color = body.brand_color
 
   const { data, error } = await supabase

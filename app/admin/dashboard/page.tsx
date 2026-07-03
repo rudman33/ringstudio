@@ -60,6 +60,9 @@ export default function AdminDashboard(){
   const [brandColor,setBrandColor]=useState('#B5966D')
   const [ghlApiKey,setGhlApiKey]=useState('')
   const [ghlLocationId,setGhlLocationId]=useState('')
+  const [bgColor,setBgColor]=useState('transparent')
+  const [textColor,setTextColor]=useState('#1C1612')
+  const [buttonColor,setButtonColor]=useState('#B5966D')
   const [uploading,setUploading]=useState(false)
   const fileRef=useRef<HTMLInputElement>(null)
 
@@ -78,6 +81,9 @@ export default function AdminDashboard(){
     if(accRes.data?.calendly_url) setCalendlyUrl(accRes.data.calendly_url)
     if(accRes.data?.ghl_api_key) setGhlApiKey(accRes.data.ghl_api_key)
     if(accRes.data?.ghl_location_id) setGhlLocationId(accRes.data.ghl_location_id)
+    if(accRes.data?.bg_color) setBgColor(accRes.data.bg_color)
+    if(accRes.data?.text_color) setTextColor(accRes.data.text_color)
+    if(accRes.data?.button_color) setButtonColor(accRes.data.button_color)
     if(accRes.data?.notification_email) setNotifEmail(accRes.data.notification_email)
     if(accRes.data?.brand_color) setBrandColor(accRes.data.brand_color)
     setLoading(false)
@@ -175,7 +181,7 @@ export default function AdminDashboard(){
 
   async function saveCalendly(){
     try{
-      const res=await fetch('/api/admin/account',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({calendly_url:calendlyUrl,notification_email:notifEmail,brand_color:brandColor,ghl_api_key:ghlApiKey,ghl_location_id:ghlLocationId})})
+      const res=await fetch('/api/admin/account',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({calendly_url:calendlyUrl,notification_email:notifEmail,brand_color:brandColor,ghl_api_key:ghlApiKey,ghl_location_id:ghlLocationId,bg_color:bgColor,text_color:textColor,button_color:buttonColor})})
       const json=await res.json()
       if(!res.ok){
         alert('Could not save: '+(json.error||'Unknown error. Please try again.'))
@@ -183,7 +189,7 @@ export default function AdminDashboard(){
       }
       // Re-fetch from the server to confirm what's actually saved, rather than trusting local state
       const confirmRes=await fetch('/api/admin/account').then(r=>r.json())
-      const mismatch=confirmRes.data?.calendly_url!==calendlyUrl||confirmRes.data?.notification_email!==notifEmail||confirmRes.data?.brand_color!==brandColor||confirmRes.data?.ghl_api_key!==ghlApiKey||confirmRes.data?.ghl_location_id!==ghlLocationId
+      const mismatch=confirmRes.data?.calendly_url!==calendlyUrl||confirmRes.data?.notification_email!==notifEmail||confirmRes.data?.brand_color!==brandColor||confirmRes.data?.ghl_api_key!==ghlApiKey||confirmRes.data?.ghl_location_id!==ghlLocationId||confirmRes.data?.bg_color!==bgColor||confirmRes.data?.text_color!==textColor||confirmRes.data?.button_color!==buttonColor
       if(mismatch){
         alert('Warning: the saved values don\'t fully match what you entered. Please check and try again.')
         if(confirmRes.data){
@@ -192,6 +198,9 @@ export default function AdminDashboard(){
           if(confirmRes.data.brand_color) setBrandColor(confirmRes.data.brand_color)
           if(confirmRes.data.ghl_api_key) setGhlApiKey(confirmRes.data.ghl_api_key)
           if(confirmRes.data.ghl_location_id) setGhlLocationId(confirmRes.data.ghl_location_id)
+          if(confirmRes.data.bg_color) setBgColor(confirmRes.data.bg_color)
+          if(confirmRes.data.text_color) setTextColor(confirmRes.data.text_color)
+          if(confirmRes.data.button_color) setButtonColor(confirmRes.data.button_color)
         }
         return
       }
@@ -300,6 +309,28 @@ export default function AdminDashboard(){
               <div style={{marginBottom:14}}>
                 <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Brand color</label>
                 <input type="color" value={brandColor} onChange={e=>setBrandColor(e.target.value)} style={{height:38,width:100,padding:'2px 6px',border:'1px solid '+BDRS,borderRadius:8}}/>
+              </div>
+              <div style={{marginBottom:14}}>
+                <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Builder background color</label>
+                <div style={{display:'flex',alignItems:'center',gap:10,flexWrap:'wrap' as const}}>
+                  {bgColor!=='transparent'&&<input type="color" value={bgColor||'#ffffff'} onChange={e=>setBgColor(e.target.value)} style={{height:38,width:60,padding:'2px 6px',border:'1px solid '+BDRS,borderRadius:8}}/>}
+                  <button onClick={()=>setBgColor('transparent')} style={{fontSize:11,padding:'4px 10px',borderRadius:6,border:'1px solid '+BDRS,background:bgColor==='transparent'?G:'transparent',color:bgColor==='transparent'?'#fff':INKS,cursor:'pointer',fontFamily:'inherit'}}>Transparent</button>
+                  {bgColor==='transparent'?<span style={{fontSize:12,color:INKS}}>No background — jeweler's site shows through</span>:<span style={{fontSize:12,color:INKS}}>{bgColor}</span>}
+                </div>
+              </div>
+              <div style={{marginBottom:14}}>
+                <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Text color</label>
+                <div style={{display:'flex',alignItems:'center',gap:10}}>
+                  <input type="color" value={textColor} onChange={e=>setTextColor(e.target.value)} style={{height:38,width:60,padding:'2px 6px',border:'1px solid '+BDRS,borderRadius:8}}/>
+                  <span style={{fontSize:12,color:INKS}}>{textColor}</span>
+                </div>
+              </div>
+              <div style={{marginBottom:14}}>
+                <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Button color</label>
+                <div style={{display:'flex',alignItems:'center',gap:10}}>
+                  <input type="color" value={buttonColor} onChange={e=>setButtonColor(e.target.value)} style={{height:38,width:60,padding:'2px 6px',border:'1px solid '+BDRS,borderRadius:8}}/>
+                  <span style={{fontSize:12,color:INKS}}>{buttonColor}</span>
+                </div>
               </div>
               <div style={{marginBottom:14}}>
                 <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Calendly booking link</label>
