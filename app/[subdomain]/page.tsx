@@ -173,7 +173,7 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
     setDone(true)
   }
 
-  const inp={width:'100%',padding:'9px 12px',fontSize:14,border:'1px solid '+BDRS,borderRadius:8,background:W,color:INK,outline:'none',fontFamily:'inherit'} as any
+  const inp={width:'100%',padding:'9px 12px',fontSize:14,border:'1px solid '+BDRS,borderRadius:8,background:W,color:'#1C1612',outline:'none',fontFamily:'inherit'} as any
   const bn={background:BTN,border:'none',borderRadius:8,padding:'10px 22px',fontSize:13,fontWeight:500,color:'#fff',cursor:'pointer',marginLeft:'auto',fontFamily:'inherit'} as any
   const bb={background:'transparent',border:'1px solid '+BDRS,borderRadius:8,padding:'10px 18px',fontSize:13,color:INKS,cursor:'pointer',fontFamily:'inherit'} as any
   const SH=({n,t,s}:{n:number,t:string,s:string})=><div style={{marginBottom:'1.25rem'}}><div style={{fontSize:10,color:G,textTransform:'uppercase',letterSpacing:'.1em',fontWeight:500,marginBottom:5}}>Step {n} of {T}</div><div style={{fontFamily:'Georgia,serif',fontSize:26,fontWeight:300,color:INK,marginBottom:4}}>{t}</div><div style={{fontSize:13,color:INKS}}>{s}</div></div>
