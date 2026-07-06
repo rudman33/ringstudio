@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, use, useRef } from 'react'
 
-const G='var(--brand)',GD='var(--brand-dark)',GP='var(--brand-pale)',INK='var(--ink)',INKS='#9C8470',INKG='#C8B8A8',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
+const G='var(--brand,#B5966D)',GD='var(--brand-dark,#8A6D48)',GP='var(--brand-pale,#FAF5EE)',INK='var(--ink,#1C1612)',INKS='#9C8470',INKG='#C8B8A8',W='#FFFFFF',BTN='var(--button,#B5966D)',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
 const SC:any={Diamond:'#E8F4FF',Sapphire:'#C5D8F0',Emerald:'#C8E8D0',Ruby:'#FAD0D0',Morganite:'#FAE0EC',Moissanite:'#EEEDFE'}
 const MC:any={'Yellow Gold':'#E8C45A','White Gold':'#D8D8E4','Rose Gold':'#E8A48A','Platinum':'#C4C4D4','Two-Tone':'#D4B870'}
 const SZ:any={'0.5 ct':18,'0.75 ct':22,'1.0 ct':27,'1.5 ct':31,'2.0 ct':35,'2.5+ ct':38}
@@ -46,6 +46,7 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
           r.style.setProperty('--brand-pale', brandColor + '1a')
           r.style.setProperty('--bg', bgColor)
           r.style.setProperty('--ink', textColor)
+          r.style.setProperty('--button', buttonColor)
           const o=json.data.options
           const mapped:any={}
           Object.keys(o).forEach(key=>{
@@ -173,7 +174,7 @@ export default function Page({params}:{params:Promise<{subdomain:string}>}){
   }
 
   const inp={width:'100%',padding:'9px 12px',fontSize:14,border:'1px solid '+BDRS,borderRadius:8,background:W,color:INK,outline:'none',fontFamily:'inherit'} as any
-  const bn={background:G,border:'none',borderRadius:8,padding:'10px 22px',fontSize:13,fontWeight:500,color:'#fff',cursor:'pointer',marginLeft:'auto',fontFamily:'inherit'} as any
+  const bn={background:BTN,border:'none',borderRadius:8,padding:'10px 22px',fontSize:13,fontWeight:500,color:'#fff',cursor:'pointer',marginLeft:'auto',fontFamily:'inherit'} as any
   const bb={background:'transparent',border:'1px solid '+BDRS,borderRadius:8,padding:'10px 18px',fontSize:13,color:INKS,cursor:'pointer',fontFamily:'inherit'} as any
   const SH=({n,t,s}:{n:number,t:string,s:string})=><div style={{marginBottom:'1.25rem'}}><div style={{fontSize:10,color:G,textTransform:'uppercase',letterSpacing:'.1em',fontWeight:500,marginBottom:5}}>Step {n} of {T}</div><div style={{fontFamily:'Georgia,serif',fontSize:26,fontWeight:300,color:INK,marginBottom:4}}>{t}</div><div style={{fontSize:13,color:INKS}}>{s}</div></div>
   const Nav=({dis,lbl}:{dis?:boolean,lbl?:string})=><div style={{display:'flex',gap:8,marginTop:'1.5rem'}}>{cur>1&&<button style={bb} onClick={prev}>← Back</button>}<button style={{...bn,opacity:dis?.35:1,marginLeft:'auto'}} disabled={dis} onClick={next}>{lbl||'Continue →'}</button></div>
