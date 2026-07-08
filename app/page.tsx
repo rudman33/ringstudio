@@ -143,7 +143,7 @@ export default function MarketingPage(){
         borderBottom:scrolled?'1px solid rgba(255,255,255,0.08)':'1px solid transparent',
       }}>
         <div className="nav-row" style={{...wrap,height:60,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-          <div style={{fontFamily:'Cormorant,Georgia,serif',fontSize:19,fontWeight:600,color:'#F4EEE4'}}>Jewelry<span style={{color:GL}}>Engine</span></div>
+          <div style={{fontFamily:'Cormorant,Georgia,serif',fontSize:19,fontWeight:600,color:'#F4EEE4'}}>Jewelry <span style={{color:GL}}>Engine</span></div>
           <div style={{display:'flex',gap:20,alignItems:'center'}}>
             <a href="/auth/login" className="nav-signin" style={{fontSize:13,color:'rgba(244,238,228,0.7)',textDecoration:'none'}}>Sign in</a>
             <a href="/auth/signup" style={{...ctaBtn,padding:'8px 16px',fontSize:13}}>Start your free trial</a>
