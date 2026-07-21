@@ -17,6 +17,15 @@ export default function ResetPasswordPage() {
 
   useEffect(() => {
     const supabase = createClient()
+    // A recovery link must not act on a pre-existing session for a DIFFERENT user,
+    // or updateUser() will change the wrong account's password.
+    const hash = typeof window !== 'undefined' ? window.location.hash : ''
+    const isRecovery = hash.includes('type=recovery')
+    if (!isRecovery) {
+      supabase.auth.getSession().then(({ data }) => {
+        if (data.session) supabase.auth.signOut()
+      })
+    }
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) { setReady(true); setSessionError(false) }
     })
