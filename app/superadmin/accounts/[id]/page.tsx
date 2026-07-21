@@ -50,6 +50,40 @@ export default function ConfigureAccountPage() {
     setMsg(res.ok ? "Saved." : "Error: " + (j.error || "unknown"))
   }
 
+  const updateLocal = (optionId: string, patch: any) => {
+    setOptions(prev => prev.map(o => o.id === optionId ? { ...o, ...patch } : o))
+  }
+
+  const saveOption = async (o: any) => {
+    const res = await fetch("/api/superadmin/accounts/" + id + "/options", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ option_id: o.id, label: o.label, image_url: o.image_url || null, is_active: o.is_active }),
+    })
+    const j = await res.json()
+    setMsg(res.ok ? "Saved " + o.label : "Error: " + (j.error || "unknown"))
+  }
+
+  const deleteOption = async (o: any) => {
+    if (!confirm("Delete option \"" + o.label + "\"? This only removes it from this jeweler.")) return
+    const res = await fetch("/api/superadmin/accounts/" + id + "/options?option_id=" + o.id, { method: "DELETE" })
+    if (res.ok) { setOptions(prev => prev.filter(x => x.id !== o.id)); setMsg("Deleted " + o.label) }
+    else { const j = await res.json(); setMsg("Error: " + (j.error || "unknown")) }
+  }
+
+  const addOption = async (step_key: string) => {
+    const label = prompt("New option name for " + step_key + ":")
+    if (!label) return
+    const res = await fetch("/api/superadmin/accounts/" + id + "/options", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ step_key, label }),
+    })
+    const j = await res.json()
+    if (res.ok) { setOptions(prev => [...prev, j.data]); setMsg("Added " + label) }
+    else setMsg("Error: " + (j.error || "unknown"))
+  }
+
   if (!form) {
     return <div style={{padding:32,fontFamily:"Georgia,serif",color:INK}}>{msg || "Loading..."}</div>
   }
@@ -88,15 +122,24 @@ export default function ConfigureAccountPage() {
         Ring options ({options.length})
       </h2>
       {Object.keys(grouped).sort().map(step => (
-        <div key={step} style={{marginBottom:16}}>
-          <div style={{fontSize:11,color:INKS,textTransform:"uppercase",letterSpacing:".07em",marginBottom:6}}>{step}</div>
-          <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-            {grouped[step].map(o => (
-              <span key={o.id} style={{fontSize:13,padding:"5px 10px",borderRadius:6,border:"1px solid "+BDRS,color:INK,opacity:o.is_active?1:.45}}>
-                {o.label}{o.image_url ? "" : " (no image)"}
-              </span>
-            ))}
-          </div>
+        <div key={step} style={{marginBottom:24}}>
+          <div style={{fontSize:11,color:INKS,textTransform:"uppercase",letterSpacing:".07em",marginBottom:8}}>{step}</div>
+          {grouped[step].map(o => (
+            <div key={o.id} style={{display:"flex",gap:8,alignItems:"center",marginBottom:6}}>
+              <input value={o.label ?? ""} onChange={e=>updateLocal(o.id,{label:e.target.value})}
+                style={{flex:"0 0 170px",padding:"6px 10px",fontSize:13,border:"1px solid "+BDRS,borderRadius:6}}/>
+              <input value={o.image_url ?? ""} placeholder="image URL"
+                onChange={e=>updateLocal(o.id,{image_url:e.target.value})}
+                style={{flex:1,padding:"6px 10px",fontSize:12,border:"1px solid "+BDRS,borderRadius:6}}/>
+              <label style={{fontSize:12,color:INKS,display:"flex",alignItems:"center",gap:4}}>
+                <input type="checkbox" checked={!!o.is_active} onChange={e=>updateLocal(o.id,{is_active:e.target.checked})}/>
+                on
+              </label>
+              <button onClick={()=>saveOption(o)} style={{background:G,border:"none",borderRadius:6,padding:"6px 10px",fontSize:12,color:"#fff",cursor:"pointer"}}>Save</button>
+              <button onClick={()=>deleteOption(o)} style={{background:"#C0392B",border:"none",borderRadius:6,padding:"6px 10px",fontSize:12,color:"#fff",cursor:"pointer"}}>Delete</button>
+            </div>
+          ))}
+          <button onClick={()=>addOption(step)} style={{background:"none",border:"1px dashed "+BDRS,borderRadius:6,padding:"6px 12px",fontSize:12,color:INKS,cursor:"pointer",marginTop:4}}>+ Add option to {step}</button>
         </div>
       ))}
     </div>
