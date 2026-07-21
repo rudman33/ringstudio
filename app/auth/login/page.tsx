@@ -3,8 +3,6 @@ import { useState } from 'react'
 
 const G='#B5966D',INK='#1C1612',INKS='#9C8470',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
 
-const SUPA_URL='https://hzxpilquathfccmxhhfu.supabase.co'
-const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6eHBpbHF1YXRoZmNjbXhoaGZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjM4NjcsImV4cCI6MjA5NjU5OTg2N30.QdaKnYen8I0fRhPpcx-OCuF7kHIL1kr2fIVDiS-sMv8'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
