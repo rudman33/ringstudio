@@ -59,24 +59,9 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Seed default options for the new account
-  const defaultOptions = {
-    stone: ['Diamond','Sapphire','Emerald','Ruby','Morganite','Moissanite'],
-    shape: ['Round','Princess','Oval','Cushion','Marquise','Pear','Emerald cut','Radiant'],
-    carat: ['0.5 ct','0.75 ct','1.0 ct','1.5 ct','2.0 ct','2.5+ ct'],
-    setting: ['Solitaire','Halo','Pavé','Three Stone','Bezel','Vintage'],
-    metal: ['Yellow Gold','White Gold','Rose Gold','Platinum','Two-Tone'],
-    band: ['Plain','Twisted','Eternity','Milgrain','Cathedral','Split Shank'],
-    enh: ['Engraving','Side stones','Filigree','Conflict-free cert.','Hidden halo','Rush production'],
-  }
-
-  const rows: any[] = []
-  Object.entries(defaultOptions).forEach(([step_key, labels]) => {
-    labels.forEach((label, i) => {
-      rows.push({ account_id: data.id, step_key, label, sort_order: i + 1 })
-    })
-  })
-  await supabase.from('step_options').insert(rows)
+  // Default builder steps and ring options are seeded by the database
+  // trigger `on_account_created_seed_defaults`. Seeding here as well
+  // produced duplicate options in every new jeweler's builder.
 
   return NextResponse.json({ data })
 }
