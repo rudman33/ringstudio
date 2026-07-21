@@ -57,15 +57,21 @@ export async function PATCH(req: NextRequest) {
 
   const body = await req.json()
   const supabase = getClient()
+
+  // Only update fields the client actually sent. Previously any omitted field
+  // was written as null, so renaming an option silently wiped its image.
+  const patch: Record<string, any> = { updated_at: new Date().toISOString() }
+  for (const key of ['label', 'description', 'color_hex', 'image_url', 'sort_order', 'is_active']) {
+    if (key in body) patch[key] = body[key]
+  }
+  if (Object.keys(patch).length === 1) {
+    return NextResponse.json({ error: 'No fields to update' }, { status: 400 })
+  }
+
   // Scope to this account so one jeweler can't edit another's options by guessing an id
   const { data, error } = await supabase
     .from('step_options')
-    .update({
-      label: body.label,
-      description: body.description || null,
-      color_hex: body.color_hex || null,
-      image_url: body.image_url || null
-    })
+    .update(patch)
     .eq('id', body.id)
     .eq('account_id', result.accountId)
     .select().single()
