@@ -13,7 +13,9 @@ export default function SuperAdmin(){
 
   async function load(){
     setLoading(true)
-    const res = await fetch('/api/superadmin/accounts').then(r=>r.json())
+    const raw = await fetch('/api/superadmin/accounts')
+    if(raw.status===401||raw.status===403){ window.location.href='/auth/login'; return }
+    const res = await raw.json()
     if(res.data) setAccounts(res.data)
     setLoading(false)
   }
@@ -83,9 +85,10 @@ export default function SuperAdmin(){
                 <div style={{fontSize:12,color:INKS,marginTop:2}}>{acc.email} · {acc.subdomain}.{process.env.NEXT_PUBLIC_APP_DOMAIN||'jeweleryengine.com'} · {acc.plan} plan</div>
               </div>
               <div style={{display:'flex',gap:6,flexShrink:0}}>
+                <a href={`/superadmin/accounts/${acc.id}`} style={{...btn('#F0EBE4',INK),textDecoration:'none',display:'inline-block'}}>Configure</a>
                 <a href={`/${acc.subdomain}`} target="_blank" style={{...btn('#F0EBE4',INK),textDecoration:'none',display:'inline-block'}}>View builder</a>
                 {acc.status!=='active'&&<button onClick={()=>updateStatus(acc.id,'active')} style={btn('#0F6E56')}>Activate</button>}
-                {acc.status==='active'&&<button onClick={()=>updateStatus(acc.id,'suspended')} style={btn('#C0392B')}>Suspend</button>}
+                {acc.status==='active'&&<button onClick={()=>{if(confirm(`Suspend ${acc.business_name}? Their public ring builder will stop working immediately.`)) updateStatus(acc.id,'suspended')}} style={btn('#C0392B')}>Suspend</button>}
               </div>
             </div>
             <div style={{fontSize:11,color:INKG,marginTop:8}}>Created {new Date(acc.created_at).toLocaleDateString()} · Trial ends {acc.trial_ends_at?new Date(acc.trial_ends_at).toLocaleDateString():'—'}</div>
