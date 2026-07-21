@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
 
   // ── Subdomain routing (unchanged) ──────────────────────────────────────────
   const hostname = request.headers.get('host') || ''
-  const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || 'ringstudio.com'
+  const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || 'jeweleryengine.com'
 
   const subdomainMatch = hostname.match(
     new RegExp(`^([a-z0-9-]+)\\.(?:${appDomain.replace('.', '\\.')}|localhost)`)
