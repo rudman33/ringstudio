@@ -2,9 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import Replicate from 'replicate'
 import { checkAndConsumeDesignCredit } from '../../../../lib/design-limits'
 
-// Allow this route up to 55s on Vercel (Hobby/Pro cap is 60s) since
-// Replicate image generation can occasionally be slow.
-export const maxDuration = 55
+// NOTE: deliberately no maxDuration override here. This project's default
+// (Fluid Compute) function timeout is well above the ~55-62s flux-schnell
+// has been taking, and testing showed setting an explicit maxDuration=55
+// made things WORSE — Vercel killed the function with
+// FUNCTION_INVOCATION_TIMEOUT at exactly 55s, before the improved error
+// handling below could even run. If you need a hard cap, set it comfortably
+// above observed latency (e.g. 90+) rather than near it.
 
 const replicate = new Replicate({ auth: process.env.REPLICATE_API_TOKEN })
 
@@ -72,21 +76,41 @@ export async function POST(req: NextRequest) {
 
     const prompt = buildPrompt(body.selections || {})
 
-    const output = await replicate.run(
-      'black-forest-labs/flux-schnell',
-      {
-        input: {
-          prompt,
-          num_outputs: 1,
-          aspect_ratio: '1:1',
-          output_format: 'jpg',
-          output_quality: 90,
-        }
-      }
-    ) as any
+    // Use predictions.create + wait (instead of the run() shortcut) so that
+    // on failure we get the actual Replicate-side status/error/logs instead
+    // of a bare thrown Error or a silently empty output. This is what
+    // surfaced the original bug: run() was resolving with a null output and
+    // no exception at all when something went wrong upstream.
+    let prediction = await replicate.predictions.create({
+      model: 'black-forest-labs/flux-schnell',
+      input: {
+        prompt,
+        num_outputs: 1,
+        aspect_ratio: '1:1',
+        output_format: 'jpg',
+        output_quality: 90,
+      },
+    })
+    prediction = await replicate.wait(prediction)
 
     const elapsedMs = Date.now() - startedAt
 
+    if (prediction.status !== 'succeeded') {
+      console.error('Visualization prediction did not succeed', {
+        account_id: body.account_id,
+        elapsedMs,
+        status: prediction.status,
+        error: prediction.error,
+        logs: prediction.logs,
+        id: prediction.id,
+      })
+      return NextResponse.json(
+        { error: `Image generation failed (${prediction.status}): ${prediction.error || 'no error detail from Replicate'}` },
+        { status: 502 }
+      )
+    }
+
+    const output = prediction.output as any
     let imageUrl = Array.isArray(output) ? output[0] : output
 
     // Handle ReadableStream / FileOutput object from Replicate SDK
@@ -97,22 +121,19 @@ export async function POST(req: NextRequest) {
       imageUrl = imageUrl.toString()
     }
 
-    // Replicate can resolve `run()` successfully (no thrown error) but still
-    // hand back a null/empty output — e.g. account rate-limited or out of
-    // credit, or the safety filter suppressed the image. Previously this
-    // silently returned `{ url: null }` with a 200, which the UI shows as a
-    // generic "couldn't generate a preview" with no diagnostic trail. Log
-    // loudly and return a real error status so this is visible in Vercel
-    // runtime error logs instead of disappearing.
+    // Prediction says "succeeded" but handed back nothing usable — e.g. the
+    // safety filter suppressed the image. Log everything we have instead of
+    // returning a silent 200 with a null url.
     if (!imageUrl) {
-      console.error('Visualization returned empty output', {
+      console.error('Visualization succeeded but returned no usable output', {
         account_id: body.account_id,
         elapsedMs,
-        rawOutputType: typeof output,
+        id: prediction.id,
+        logs: prediction.logs,
         rawOutput: JSON.stringify(output)?.slice(0, 500),
       })
       return NextResponse.json(
-        { error: 'Image generation returned no result. This usually means the Replicate account is out of credit, rate-limited, or the request was filtered. Check the Replicate dashboard.' },
+        { error: 'Image generation completed but returned no image (often a safety-filter suppression). See Vercel logs / Replicate prediction ' + prediction.id + ' for detail.' },
         { status: 502 }
       )
     }
@@ -120,7 +141,7 @@ export async function POST(req: NextRequest) {
     if (elapsedMs > 15000) {
       // Not an error, but flux-schnell normally finishes in a few seconds.
       // Anything over ~15s is worth knowing about even on success.
-      console.warn('Visualization succeeded but was unusually slow', { account_id: body.account_id, elapsedMs })
+      console.warn('Visualization succeeded but was unusually slow', { account_id: body.account_id, elapsedMs, id: prediction.id })
     }
 
     return NextResponse.json({ url: imageUrl, prompt })
