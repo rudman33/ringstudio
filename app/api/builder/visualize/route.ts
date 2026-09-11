@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import Replicate from 'replicate'
 import { checkAndConsumeDesignCredit } from '../../../../lib/design-limits'
 
+// Allow this route up to 55s on Vercel (Hobby/Pro cap is 60s) since
+// Replicate image generation can occasionally be slow.
+export const maxDuration = 55
+
 const replicate = new Replicate({ auth: process.env.REPLICATE_API_TOKEN })
 
 const metalDesc: Record<string,string> = {
@@ -50,6 +54,7 @@ function buildPrompt(sel: any) {
 }
 
 export async function POST(req: NextRequest) {
+  const startedAt = Date.now()
   try {
     const body = await req.json()
 
@@ -80,8 +85,10 @@ export async function POST(req: NextRequest) {
       }
     ) as any
 
+    const elapsedMs = Date.now() - startedAt
+
     let imageUrl = Array.isArray(output) ? output[0] : output
-    
+
     // Handle ReadableStream / FileOutput object from Replicate SDK
     if (imageUrl && typeof imageUrl === 'object' && imageUrl.url) {
       imageUrl = typeof imageUrl.url === 'function' ? imageUrl.url() : imageUrl.url
@@ -90,9 +97,35 @@ export async function POST(req: NextRequest) {
       imageUrl = imageUrl.toString()
     }
 
+    // Replicate can resolve `run()` successfully (no thrown error) but still
+    // hand back a null/empty output — e.g. account rate-limited or out of
+    // credit, or the safety filter suppressed the image. Previously this
+    // silently returned `{ url: null }` with a 200, which the UI shows as a
+    // generic "couldn't generate a preview" with no diagnostic trail. Log
+    // loudly and return a real error status so this is visible in Vercel
+    // runtime error logs instead of disappearing.
+    if (!imageUrl) {
+      console.error('Visualization returned empty output', {
+        account_id: body.account_id,
+        elapsedMs,
+        rawOutputType: typeof output,
+        rawOutput: JSON.stringify(output)?.slice(0, 500),
+      })
+      return NextResponse.json(
+        { error: 'Image generation returned no result. This usually means the Replicate account is out of credit, rate-limited, or the request was filtered. Check the Replicate dashboard.' },
+        { status: 502 }
+      )
+    }
+
+    if (elapsedMs > 15000) {
+      // Not an error, but flux-schnell normally finishes in a few seconds.
+      // Anything over ~15s is worth knowing about even on success.
+      console.warn('Visualization succeeded but was unusually slow', { account_id: body.account_id, elapsedMs })
+    }
+
     return NextResponse.json({ url: imageUrl, prompt })
   } catch (e: any) {
-    console.error('Visualization error:', e)
+    console.error('Visualization error:', e, { elapsedMs: Date.now() - startedAt })
     return NextResponse.json({ error: e.message || 'Failed to generate image' }, { status: 500 })
   }
 }
