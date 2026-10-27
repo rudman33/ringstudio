@@ -6,7 +6,7 @@
 ## Product Overview
 **One-liner:** A white-label ring builder you embed on your jewelry website, so customers design their own engagement ring and you get a qualified, ready-to-quote lead.
 
-**What it does:** Jewelry Engine is a SaaS tool for independent jewelers. It provides an embeddable, branded 13-step ring configurator (stone, shape, carat, setting, metal, band, enhancements) that customers use directly on the jeweler's own website. When a customer finishes, AI generates a photorealistic preview of their exact design, and the inquiry, full spec, contact info, budget, timeline, lands directly in the jeweler's dashboard, ready to quote.
+**What it does:** Ring Studio is a SaaS tool for independent jewelers. It provides an embeddable, branded 13-step ring configurator (stone, shape, carat, setting, metal, band, enhancements) that customers use directly on the jeweler's own website. When a customer finishes, AI generates a photorealistic preview of their exact design, and the inquiry, full spec, contact info, budget, timeline, lands directly in the jeweler's dashboard, ready to quote.
 
 **Product category:** Vertical SaaS / lead-generation tool for independent jewelers (sits adjacent to "website builder" and "CRM," but neither, it's a single embeddable widget plus a backend inbox).
 
@@ -51,7 +51,7 @@
 **Emotional tension:** [NEEDS ALLAN'S INPUT, current guess is feeling behind/outdated compared to bigger jewelry chains with slicker websites, but this should come from real conversations with jewelers, not an assumption]
 
 ## Competitive Landscape
-**Direct competitor: ShowroomPro (ringbuilder.ai / showroompro.ai)** - AI-powered engagement ring design tool. Based on their own meta description ("Design your dream engagement ring with AI, then collaborate with expert jewelers to bring your vision to life"), this reads as a consumer-facing marketplace/concierge model: the END CUSTOMER designs on ShowroomPro's own branded site, then gets matched or connected to a jeweler to fulfill it. This is meaningfully different from Jewelry Engine's white-label model, where the JEWELER embeds the builder on their OWN branded website and keeps the customer relationship entirely. Allan confirmed their pricing page existed at one point but has since been removed - possibly signals they're repositioning, moving to custom/sales-assisted pricing, or still actively iterating on their go-to-market. Worth periodically re-checking showroompro.ai for changes. Could not fully verify their model via direct browsing since their site is a JS-rendered app not visible to web-fetch tools - this assessment is a reasoned hypothesis based on available text, not a confirmed fact, and should be revisited with a live demo of their product if possible.
+**Direct competitor: ShowroomPro (ringbuilder.ai / showroompro.ai)** - AI-powered engagement ring design tool. Based on their own meta description ("Design your dream engagement ring with AI, then collaborate with expert jewelers to bring your vision to life"), this reads as a consumer-facing marketplace/concierge model: the END CUSTOMER designs on ShowroomPro's own branded site, then gets matched or connected to a jeweler to fulfill it. This is meaningfully different from Ring Studio's white-label model, where the JEWELER embeds the builder on their OWN branded website and keeps the customer relationship entirely. Allan confirmed their pricing page existed at one point but has since been removed - possibly signals they're repositioning, moving to custom/sales-assisted pricing, or still actively iterating on their go-to-market. Worth periodically re-checking showroompro.ai for changes. Could not fully verify their model via direct browsing since their site is a JS-rendered app not visible to web-fetch tools - this assessment is a reasoned hypothesis based on available text, not a confirmed fact, and should be revisited with a live demo of their product if possible.
 
 **Secondary competitors:** Generic contact-form plugins, live chat widgets (Tidio, Intercom) used as a workaround; general-purpose AI jewelry design tools (Tashvi AI, BLNG, Diatech Studio) that are aimed at designers/manufacturers for ideation, not at jewelers for embeddable customer-facing lead capture
 **Indirect competitors:** Jeweler does nothing different and just relies on phone calls / in-store walk-ins
@@ -60,10 +60,10 @@
 **Key differentiators:**
 - Purpose-built for jewelry decisions (stone/shape/carat/setting/metal/band), not a generic form builder
 - AI-generated photorealistic preview of the exact design, not a generic stock photo
-- White-label, looks like the jeweler's own site, not "powered by Jewelry Engine"
+- White-label, looks like the jeweler's own site, not "powered by Ring Studio"
 - No developer needed, one embed snippet
 
-**How we do it differently:** Unlike marketplace/concierge-style competitors (e.g. ShowroomPro, based on available evidence), Jewelry Engine is fully white-label - the customer designs on the JEWELER's own website, under the jeweler's own brand, and the inquiry goes straight to the jeweler. The jeweler owns the customer relationship end-to-end; no third party sits between them and the lead.
+**How we do it differently:** Unlike marketplace/concierge-style competitors (e.g. ShowroomPro, based on available evidence), Ring Studio is fully white-label - the customer designs on the JEWELER's own website, under the jeweler's own brand, and the inquiry goes straight to the jeweler. The jeweler owns the customer relationship end-to-end; no third party sits between them and the lead.
 **Why that's better:** Higher-intent leads, faster sales conversations, no engineering lift, AND no risk of a third party disintermediating the jeweler's own customer relationship or taking a cut of the eventual sale.
 **Why customers choose us:** [Needs real customer validation - currently a hypothesis, not yet proven with paying customers. Core pitch hypothesis: "Your website, your brand, your customer - we just give them something better to do on it."]
 

@@ -1,4 +1,4 @@
-# Jewelry Engine — 90-Day Go-To-Market Plan
+# Ring Studio — 90-Day Go-To-Market Plan
 
 *Last updated: June 30, 2026*
 *Goal: 5-10 paying jewelers within 1-3 months*

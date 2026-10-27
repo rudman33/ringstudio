@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 // Put this file at app/sitemap.ts
 // Add every new public page here (integration pages, blog posts) as you publish them.
-const SITE = "https://jeweleryengine.com";
+const SITE = "https://ringstudio.ca";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

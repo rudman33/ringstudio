@@ -37,10 +37,12 @@ export async function middleware(request: NextRequest) {
 
   // ── Subdomain routing (unchanged) ──────────────────────────────────────────
   const hostname = request.headers.get('host') || ''
-  const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || 'jeweleryengine.com'
+  const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || 'ringstudio.ca'
 
+  // Also accept the legacy domain so existing builder subdomains keep working.
+  const domains = [appDomain, 'jeweleryengine.com'].map((d) => d.replace(/\./g, '\\.'))
   const subdomainMatch = hostname.match(
-    new RegExp(`^([a-z0-9-]+)\\.(?:${appDomain.replace('.', '\\.')}|localhost)`)
+    new RegExp(`^([a-z0-9-]+)\\.(?:${domains.join('|')}|localhost)`)
   )
   const subdomain = subdomainMatch?.[1]
   const reservedSubdomains = ['www', 'admin', 'superadmin', 'api']

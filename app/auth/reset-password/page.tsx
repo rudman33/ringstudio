@@ -80,7 +80,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div style={{minHeight:"100vh",background:"#F8F3EC",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"1rem"}}>
-      <div style={{fontFamily:"Georgia,serif",fontSize:24,color:INK,marginBottom:32}}>Jewelery<span style={{color:G}}>Engine</span></div>
+      <div style={{fontFamily:"Georgia,serif",fontSize:24,color:INK,marginBottom:32}}>Ring<span style={{color:G}}>Studio</span></div>
       <div style={{background:W,border:"1px solid "+BDR,borderRadius:16,padding:"2rem",width:"100%",maxWidth:380}}>
         <div style={{fontFamily:"Georgia,serif",fontSize:22,fontWeight:300,color:INK,marginBottom:6}}>Set a new password</div>
 

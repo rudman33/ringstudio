@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
         
         ${body.notes ? `<h3 style="color:#B5966D;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 8px">Notes</h3><p style="font-size:13px;color:#5A4A3A;background:#FAF5EE;padding:12px;border-radius:8px;margin:0 0 24px">${body.notes}</p>` : ''}
         
-        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://jeweleryengine.com'}/admin/dashboard" style="display:inline-block;background:#B5966D;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500">View in admin panel</a>
+        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://ringstudio.ca'}/admin/dashboard" style="display:inline-block;background:#B5966D;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500">View in admin panel</a>
       </div>
     </div>
   `
@@ -120,8 +120,8 @@ export async function POST(request: NextRequest) {
           email: body.customer_email,
           phone: body.customer_phone || undefined,
           locationId: account.ghl_location_id,
-          tags: ['Jewelery Engine Lead'],
-          source: `Jewelery Engine — ${reference_code}`,
+          tags: ['Ring Studio Lead'],
+          source: `Ring Studio — ${reference_code}`,
         }),
       })
       if (!ghlRes.ok) {
@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
     const emailPromises = []
     if (jewelerEmail) {
       emailPromises.push(resend.emails.send({
-        from: 'Jewelery Engine <notifications@jeweleryengine.com>',
+        from: 'Ring Studio <notifications@jeweleryengine.com>',
         to: [jewelerEmail],
         subject: `New ring inquiry — ${reference_code}`,
         html: jewelerHtml,
@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
       console.error('No notification email on file for account', body.account_id)
     }
     emailPromises.push(resend.emails.send({
-      from: 'Jewelery Engine <notifications@jeweleryengine.com>',
+      from: 'Ring Studio <notifications@jeweleryengine.com>',
       to: [body.customer_email],
       subject: `Your ring inquiry — ${reference_code}`,
       html: customerHtml,

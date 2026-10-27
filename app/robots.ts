@@ -11,6 +11,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin", "/api", "/superadmin", "/auth/"],
       },
     ],
-    sitemap: "https://jeweleryengine.com/sitemap.xml",
+    sitemap: "https://ringstudio.ca/sitemap.xml",
   };
 }

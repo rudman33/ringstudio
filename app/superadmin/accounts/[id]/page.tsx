@@ -96,7 +96,7 @@ export default function ConfigureAccountPage() {
       <a href="/superadmin" style={{fontSize:13,color:INKS}}>&larr; Back to platform overview</a>
       <h1 style={{fontFamily:"Georgia,serif",fontSize:28,color:INK,margin:"12px 0 4px"}}>{form.business_name}</h1>
       <div style={{fontSize:13,color:INKS,marginBottom:24}}>
-        {form.subdomain}.jeweleryengine.com &middot; {form.plan} &middot; {form.status}
+        {form.subdomain}.ringstudio.ca &middot; {form.plan} &middot; {form.status}
       </div>
 
       {msg && <div style={{padding:"10px 14px",borderRadius:8,marginBottom:16,fontSize:13,
