@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 
 const G='#B5966D',GD='#8A6D48',GP='#FAF5EE',INK='#1C1612',INKS='#9C8470',INKG='#C8B8A8',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
-const DOMAIN=process.env.NEXT_PUBLIC_APP_DOMAIN||'jeweleryengine.com'
+const DOMAIN=process.env.NEXT_PUBLIC_APP_DOMAIN||'ringstudio.ca'
 const STEP_KEYS=['stone','shape','carat','setting','metal','band','enh']
 const STEP_LABELS:any={stone:'Stone',shape:'Shape',carat:'Carat',setting:'Setting',metal:'Metal',band:'Band',enh:'Enhancements'}
 
@@ -214,7 +214,7 @@ export default function AdminDashboard(){
   return(
     <div style={{minHeight:'100vh',background:'#F8F3EC'}}>
       <div style={{height:50,background:W,borderBottom:'1px solid '+BDR,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 1.5rem',position:'sticky',top:0,zIndex:50}}>
-        <div style={{fontFamily:'Georgia,serif',fontSize:20,color:INK}}>Jewelery<span style={{color:G}}>Engine</span><span style={{fontSize:12,color:INKS,fontFamily:'sans-serif',marginLeft:8}}>Admin</span></div>
+        <div style={{fontFamily:'Georgia,serif',fontSize:20,color:INK}}>Ring<span style={{color:G}}>Studio</span><span style={{fontSize:12,color:INKS,fontFamily:'sans-serif',marginLeft:8}}>Admin</span></div>
         <div style={{display:'flex',gap:12,alignItems:'center'}}>
           <a href={account?.subdomain?`/${account.subdomain}`:'/demo'} target="_blank" style={{fontSize:12,color:INKS,textDecoration:'none'}}>View builder ↗</a>
           <button onClick={()=>window.location.href='/auth/login'} style={{background:'none',border:'1px solid '+BDR,borderRadius:7,padding:'5px 12px',fontSize:12,color:INKS,cursor:'pointer',fontFamily:'inherit'}}>Sign out</button>
