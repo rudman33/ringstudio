@@ -59,7 +59,7 @@ function SignupForm() {
     <div style={{ minHeight: '100vh', background: '#F8F3EC', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
       <div style={{ maxWidth: 480, width: '100%' }}>
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 28, color: INK }}>Jewelry<span style={{ color: G }}>Engine</span></div>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 28, color: INK }}>Jewelery<span style={{ color: G }}>Engine</span></div>
           <div style={{ fontSize: 13, color: INKS, marginTop: 4 }}>Start your 14-day free trial</div>
         </div>
 
