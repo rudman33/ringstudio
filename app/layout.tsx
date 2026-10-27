@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Jewelry Engine — White-Label Ring Builder for Jewelers',
+  title: 'Jewelery Engine — White-Label Ring Builder for Jewelers',
   description: 'Let customers design their own ring on your website. AI-powered photorealistic previews, white-label embed, and a built-in inquiry inbox for jewelers.',
 }
 

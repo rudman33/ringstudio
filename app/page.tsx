@@ -338,7 +338,7 @@ export default function MarketingPage(){
           </div>
           <div style={{borderTop:'1px solid '+STAGE_LINE,position:'relative' as const,zIndex:2}}>
             <div style={{...wrap,padding:'24px 24px',display:'flex',justifyContent:'space-between',fontSize:12,color:'rgba(244,238,228,0.45)',flexWrap:'wrap' as const,gap:12}}>
-              <div>© {new Date().getFullYear()} Jewelry Engine</div>
+              <div>© {new Date().getFullYear()} Jewelery Engine</div>
               <div style={{display:'flex',gap:18}}>
                 <a href="/auth/login" style={{color:'rgba(244,238,228,0.6)',textDecoration:'none'}}>Sign in</a>
                 <a href="/test" target="_blank" style={{color:'rgba(244,238,228,0.6)',textDecoration:'none'}}>Live demo</a>

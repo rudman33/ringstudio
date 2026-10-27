@@ -120,8 +120,8 @@ export async function POST(request: NextRequest) {
           email: body.customer_email,
           phone: body.customer_phone || undefined,
           locationId: account.ghl_location_id,
-          tags: ['Jewelry Engine Lead'],
-          source: `Jewelry Engine — ${reference_code}`,
+          tags: ['Jewelery Engine Lead'],
+          source: `Jewelery Engine — ${reference_code}`,
         }),
       })
       if (!ghlRes.ok) {
@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
     const emailPromises = []
     if (jewelerEmail) {
       emailPromises.push(resend.emails.send({
-        from: 'Jewelry Engine <notifications@jeweleryengine.com>',
+        from: 'Jewelery Engine <notifications@jeweleryengine.com>',
         to: [jewelerEmail],
         subject: `New ring inquiry — ${reference_code}`,
         html: jewelerHtml,
@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
       console.error('No notification email on file for account', body.account_id)
     }
     emailPromises.push(resend.emails.send({
-      from: 'Jewelry Engine <notifications@jeweleryengine.com>',
+      from: 'Jewelery Engine <notifications@jeweleryengine.com>',
       to: [body.customer_email],
       subject: `Your ring inquiry — ${reference_code}`,
       html: customerHtml,

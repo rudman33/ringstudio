@@ -82,7 +82,7 @@ export default function LoginPage() {
           {mode!=='login'&&<button onClick={()=>{setMode('login');setError('');setSuccess('')}} style={{background:'none',border:'none',fontSize:13,color:INKS,cursor:'pointer',fontFamily:'inherit'}}>← Back to sign in</button>}
         </div>
       </div>
-      <div style={{marginTop:16,fontSize:12,color:INKS}}>Jewelry Engine — White-label ring builder platform</div>
+      <div style={{marginTop:16,fontSize:12,color:INKS}}>Jewelery Engine — White-label ring builder platform</div>
     </div>
   )
 }
