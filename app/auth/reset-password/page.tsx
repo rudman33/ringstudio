@@ -17,28 +17,46 @@ export default function ResetPasswordPage() {
 
   useEffect(() => {
     const supabase = createClient()
-    // A recovery link must not act on a pre-existing session for a DIFFERENT user,
-    // or updateUser() will change the wrong account's password.
-    const hash = typeof window !== 'undefined' ? window.location.hash : ''
-    const isRecovery = hash.includes('type=recovery')
-    if (!isRecovery) {
-      supabase.auth.getSession().then(({ data }) => {
-        if (data.session) supabase.auth.signOut()
-      })
+    let cancelled = false
+    const fail = () => { if (!cancelled) setSessionError(true) }
+    const ok = () => { if (!cancelled) { setReady(true); setSessionError(false) } }
+
+    const run = async () => {
+      const hash = window.location.hash.replace(/^#/, '')
+      const hashParams = new URLSearchParams(hash)
+      const query = new URLSearchParams(window.location.search)
+      const accessToken = hashParams.get('access_token')
+      const refreshToken = hashParams.get('refresh_token')
+      const code = query.get('code')
+
+      // Link carried an error (expired / already used)
+      if (hashParams.get('error') || query.get('error')) { fail(); return }
+
+      // A recovery link must establish ITS OWN session, replacing any existing one,
+      // so updateUser() never changes the wrong account's password.
+      if (accessToken && refreshToken) {
+        // Implicit-flow recovery link (what Supabase sends for server-triggered resets).
+        await supabase.auth.signOut({ scope: 'local' }).catch(() => {})
+        const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
+        window.history.replaceState(null, '', window.location.pathname)
+        if (error) fail(); else ok()
+        return
+      }
+      if (code) {
+        // PKCE-style link
+        const { error } = await supabase.auth.exchangeCodeForSession(code)
+        window.history.replaceState(null, '', window.location.pathname)
+        if (error) fail(); else ok()
+        return
+      }
+
+      // No token in the URL (e.g. page reloaded after the hash was cleared):
+      // only proceed if a session from the link is still present.
+      const { data } = await supabase.auth.getSession()
+      if (data.session) ok(); else fail()
     }
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) { setReady(true); setSessionError(false) }
-    })
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) { setReady(true); return }
-      setTimeout(() => {
-        supabase.auth.getSession().then(({ data: again }) => {
-          if (again.session) setReady(true)
-          else setSessionError(true)
-        })
-      }, 1500)
-    })
-    return () => { sub.subscription.unsubscribe() }
+    run()
+    return () => { cancelled = true }
   }, [])
 
   const handleSubmit = async () => {
