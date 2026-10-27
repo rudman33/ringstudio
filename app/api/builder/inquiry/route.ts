@@ -152,7 +152,12 @@ export async function POST(request: NextRequest) {
       subject: `Your ring inquiry — ${reference_code}`,
       html: customerHtml,
     }))
-    await Promise.all(emailPromises)
+    const results = await Promise.all(emailPromises)
+    // Resend does not throw on failure; it returns { error }. Log it so failures are visible.
+    results.forEach((r, i) => {
+      if (r?.error) console.error('Resend send failed:', i, JSON.stringify(r.error))
+      else console.log('Resend send ok:', i, r?.data?.id)
+    })
   } catch (emailError) {
     console.error('Email error:', emailError)
   }
