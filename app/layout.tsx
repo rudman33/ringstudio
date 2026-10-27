@@ -7,11 +7,13 @@ export const metadata = {
     siteName: 'Jewelery Engine',
     title: 'Jewelery Engine — White-Label Ring Builder for Jewelers',
     description: 'Customers design the ring on your website. You get the qualified inquiry. 14-day free trial.',
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Jewelery Engine ring builder' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Jewelery Engine — White-Label Ring Builder for Jewelers',
     description: 'Customers design the ring on your website. You get the qualified inquiry.',
+    images: ['/og.png'],
   },
 }
 
