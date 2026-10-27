@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef, ReactNode } from 'react'
+import JsonLd, { FAQS } from './JsonLd'
 
 const STAGE='#15110D',STAGE_LINE='rgba(255,255,255,0.10)'
 const CREAM='#F8F3EC',CREAM_PALE='#FAF5EE',W='#FFFFFF'
@@ -99,6 +100,7 @@ export default function MarketingPage(){
 
   return(
     <div style={{background:CREAM,fontFamily:'Montserrat,-apple-system,sans-serif'}}>
+      <JsonLd />
       <style>{`
         html{scroll-behavior:smooth}
         @keyframes riseIn{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
@@ -270,7 +272,8 @@ export default function MarketingPage(){
       <Reveal>
         <div style={{...wrap,padding:'40px 24px 104px',textAlign:'center' as const}}>
           <div style={eyebrowLight}>Built for jewelers</div>
-          <h2 style={h2}>Everything your studio needs, <em style={{fontStyle:'italic',color:G}}>nothing</em> it doesn’t.</h2>
+          <h2 style={h2}>A custom ring builder for your <em style={{fontStyle:'italic',color:G}}>jewelry</em> website.</h2>
+          <p style={{fontSize:14,color:INKS,lineHeight:1.7,maxWidth:560,margin:'0 auto'}}>Everything your studio needs, nothing it doesn’t — an engagement ring designer your customers can use online, built for custom jewellery studios.</p>
           <div className="grid-3col" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16,marginTop:44,textAlign:'left' as const}}>
             {FEATURES.map(f=>(
               <div key={f.title} className="feature-card" style={{background:W,border:'1px solid '+BDR,borderRadius:14,padding:'26px 26px'}}>
@@ -323,6 +326,22 @@ export default function MarketingPage(){
             ))}
           </div>
           <div style={{fontSize:12,color:INKS,marginTop:28}}>Every plan includes a 14-day free trial. No setup fees. Need more designs? Extra packs of 50 are $25.</div>
+        </div>
+      </Reveal>
+
+      {/* ───────── FAQ ───────── */}
+      <Reveal>
+        <div style={{...wrap,padding:'0 24px 112px',textAlign:'center' as const,maxWidth:760}}>
+          <div style={eyebrowLight}>FAQ</div>
+          <h2 style={h2}>Questions, <em style={{fontStyle:'italic',color:G}}>answered</em>.</h2>
+          <div style={{marginTop:36,textAlign:'left' as const}}>
+            {FAQS.map(f=>(
+              <details key={f.q} style={{borderBottom:'1px solid '+BDR,padding:'18px 0'}}>
+                <summary style={{fontSize:15,fontWeight:500,color:INK,cursor:'pointer'}}>{f.q}</summary>
+                <p style={{fontSize:13,color:INKS,lineHeight:1.7,margin:'10px 0 0'}}>{f.a}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </Reveal>
 
