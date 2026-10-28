@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import { createClient } from "../../../lib/supabase-client"
 
-const G="#B5966D",INK="#1C1612",INKS="#9C8470",W="#FFFFFF",BDR="rgba(181,150,109,0.18)",BDRS="rgba(181,150,109,0.35)"
+const G="#0071E3",INK="#1D1D1F",INKS="#86868B",W="#FFFFFF",BDR="rgba(0,0,0,0.08)",BDRS="rgba(0,0,0,0.18)"
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("")
@@ -79,10 +79,10 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div style={{minHeight:"100vh",background:"#F8F3EC",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"1rem"}}>
-      <div style={{fontFamily:"Georgia,serif",fontSize:24,color:INK,marginBottom:32}}>Ring<span style={{color:G}}>Studio</span></div>
+    <div style={{fontFamily:"Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif",minHeight:"100vh",background:"#F5F5F7",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"1rem"}}>
+      <div style={{fontFamily:"Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif",fontSize:24,color:INK,marginBottom:32}}>Ring<span style={{color:G}}>Studio</span></div>
       <div style={{background:W,border:"1px solid "+BDR,borderRadius:16,padding:"2rem",width:"100%",maxWidth:380}}>
-        <div style={{fontFamily:"Georgia,serif",fontSize:22,fontWeight:300,color:INK,marginBottom:6}}>Set a new password</div>
+        <div style={{fontFamily:"Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif",fontSize:22,fontWeight:300,color:INK,marginBottom:6}}>Set a new password</div>
 
         {sessionError && (
           <div style={{background:"#FFF0F0",border:"1px solid #FFD0D0",borderRadius:8,padding:"10px 14px",fontSize:13,color:"#C0392B",marginBottom:16}}>

@@ -2,7 +2,7 @@
 import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-const G='#B5966D',GD='#8A6D48',GP='#FAF5EE',INK='#1C1612',INKS='#9C8470',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
+const G='#0071E3',GD='#0058B0',GP='#FBFBFD',INK='#1D1D1F',INKS='#86868B',W='#FFFFFF',BDR='rgba(0,0,0,0.08)',BDRS='rgba(0,0,0,0.18)'
 
 const PLANS = [
   { key: 'starter', label: 'Starter', price: '$49', desc: 'Get started with the essentials.' },
@@ -56,10 +56,10 @@ function SignupForm() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F8F3EC', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
+    <div style={{ fontFamily: 'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif', minHeight: '100vh', background: '#F5F5F7', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
       <div style={{ maxWidth: 480, width: '100%' }}>
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 28, color: INK }}>Ring<span style={{ color: G }}>Studio</span></div>
+          <div style={{ fontFamily: 'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif', fontSize: 28, color: INK }}>Ring<span style={{ color: G }}>Studio</span></div>
           <div style={{ fontSize: 13, color: INKS, marginTop: 4 }}>Start your 14-day free trial</div>
         </div>
 
@@ -108,7 +108,7 @@ function SignupForm() {
                 }}
               >
                 <div style={{ fontSize: 12, fontWeight: 500, color: INK }}>{p.label}</div>
-                <div style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: G, margin: '2px 0' }}>{p.price}</div>
+                <div style={{ fontFamily: 'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif', fontSize: 18, color: G, margin: '2px 0' }}>{p.price}</div>
                 <div style={{ fontSize: 10, color: INKS }}>/month</div>
               </div>
             ))}
@@ -120,7 +120,7 @@ function SignupForm() {
             type="submit"
             disabled={loading}
             style={{
-              width: '100%', background: loading ? '#C8B8A8' : G, border: 'none', borderRadius: 8,
+              width: '100%', background: loading ? '#C7C7CC' : G, border: 'none', borderRadius: 8,
               padding: 13, fontSize: 14, fontWeight: 500, color: '#fff',
               cursor: loading ? 'default' : 'pointer', fontFamily: 'inherit',
             }}
@@ -139,7 +139,7 @@ function SignupForm() {
 
 export default function SignupPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#F8F3EC' }} />}>
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#F5F5F7' }} />}>
       <SignupForm />
     </Suspense>
   )

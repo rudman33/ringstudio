@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 
-const G='#B5966D',GD='#8A6D48',GP='#FAF5EE',INK='#1C1612',INKS='#9C8470',INKG='#C8B8A8',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
+const G='#0071E3',GD='#0058B0',GP='#FBFBFD',INK='#1D1D1F',INKS='#86868B',INKG='#C7C7CC',W='#FFFFFF',BDR='rgba(0,0,0,0.08)',BDRS='rgba(0,0,0,0.18)'
 const DOMAIN=process.env.NEXT_PUBLIC_APP_DOMAIN||'ringstudio.ca'
 const STEP_KEYS=['stone','shape','carat','setting','metal','band','enh']
 const STEP_LABELS:any={stone:'Stone',shape:'Shape',carat:'Carat',setting:'Setting',metal:'Metal',band:'Band',enh:'Enhancements'}
@@ -57,11 +57,11 @@ export default function AdminDashboard(){
   const [account,setAccount]=useState<any>(null)
   const [embedCopied,setEmbedCopied]=useState(false)
   const [notifEmail,setNotifEmail]=useState('')
-  const [brandColor,setBrandColor]=useState('#B5966D')
+  const [brandColor,setBrandColor]=useState('#0071E3')
   const [ghlApiKey,setGhlApiKey]=useState('')
   const [ghlLocationId,setGhlLocationId]=useState('')
-  const [textColor,setTextColor]=useState('#1C1612')
-  const [buttonColor,setButtonColor]=useState('#B5966D')
+  const [textColor,setTextColor]=useState('#1D1D1F')
+  const [buttonColor,setButtonColor]=useState('#0071E3')
   const [uploading,setUploading]=useState(false)
   const fileRef=useRef<HTMLInputElement>(null)
 
@@ -212,9 +212,9 @@ export default function AdminDashboard(){
   const newCount=inquiries.filter(i=>i.status==='new').length
 
   return(
-    <div style={{minHeight:'100vh',background:'#F8F3EC'}}>
+    <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',minHeight:'100vh',background:'#F5F5F7'}}>
       <div style={{height:50,background:W,borderBottom:'1px solid '+BDR,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 1.5rem',position:'sticky',top:0,zIndex:50}}>
-        <div style={{fontFamily:'Georgia,serif',fontSize:20,color:INK}}>Ring<span style={{color:G}}>Studio</span><span style={{fontSize:12,color:INKS,fontFamily:'sans-serif',marginLeft:8}}>Admin</span></div>
+        <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:20,color:INK}}>Ring<span style={{color:G}}>Studio</span><span style={{fontSize:12,color:INKS,fontFamily:'sans-serif',marginLeft:8}}>Admin</span></div>
         <div style={{display:'flex',gap:12,alignItems:'center'}}>
           <a href={account?.subdomain?`/${account.subdomain}`:'/demo'} target="_blank" style={{fontSize:12,color:INKS,textDecoration:'none'}}>View builder ↗</a>
           <button onClick={()=>window.location.href='/auth/login'} style={{background:'none',border:'1px solid '+BDR,borderRadius:7,padding:'5px 12px',fontSize:12,color:INKS,cursor:'pointer',fontFamily:'inherit'}}>Sign out</button>
@@ -235,30 +235,30 @@ export default function AdminDashboard(){
         <div style={{flex:1,padding:'2rem',overflowY:'auto' as const}}>
           {loading&&<div style={{fontSize:14,color:INKS}}>Loading…</div>}
           {!loading&&page==='dashboard'&&<div>
-            <div style={{fontFamily:'Georgia,serif',fontSize:26,fontWeight:300,color:INK,marginBottom:4}}>Dashboard</div>
+            <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:26,fontWeight:300,color:INK,marginBottom:4}}>Dashboard</div>
             <div style={{fontSize:13,color:INKS,marginBottom:20}}>Overview of your ring builder.</div>
             <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:12,marginBottom:24}}>
               {[['Total',inquiries.length],['New',newCount],['Quoted',inquiries.filter(i=>i.status==='quoted').length],['Closed',inquiries.filter(i=>i.status==='closed').length]].map(([l,v])=>(
                 <div key={l as string} style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'16px'}}>
                   <div style={{fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.06em',marginBottom:6}}>{l}</div>
-                  <div style={{fontFamily:'Georgia,serif',fontSize:32,fontWeight:300,color:INK}}>{v}</div>
+                  <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:32,fontWeight:300,color:INK}}>{v}</div>
                 </div>
               ))}
             </div>
-            <div style={{fontFamily:'Georgia,serif',fontSize:18,fontWeight:300,color:INK,marginBottom:12}}>Recent inquiries</div>
+            <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:18,fontWeight:300,color:INK,marginBottom:12}}>Recent inquiries</div>
             {inquiries.slice(0,5).map((inq:any)=><InqRow key={inq.id} inq={inq} onUpdate={updateStatus}/>)}
           </div>}
           {!loading&&page==='inquiries'&&<div>
-            <div style={{fontFamily:'Georgia,serif',fontSize:26,fontWeight:300,color:INK,marginBottom:4}}>Inquiries</div>
+            <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:26,fontWeight:300,color:INK,marginBottom:4}}>Inquiries</div>
             <div style={{fontSize:13,color:INKS,marginBottom:20}}>{inquiries.length} total</div>
             {inquiries.length===0&&<div style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'3rem',textAlign:'center',fontSize:14,color:INKS}}>No inquiries yet.</div>}
             {inquiries.map((inq:any)=><InqRow key={inq.id} inq={inq} onUpdate={updateStatus}/>)}
           </div>}
           {!loading&&page==='options'&&<div>
-            <div style={{fontFamily:'Georgia,serif',fontSize:26,fontWeight:300,color:INK,marginBottom:4}}>Ring options</div>
+            <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:26,fontWeight:300,color:INK,marginBottom:4}}>Ring options</div>
             <div style={{fontSize:13,color:INKS,marginBottom:20}}>Upload photos for each option to customise your builder.</div>
             <div style={{display:'flex',gap:8,marginBottom:20,flexWrap:'wrap' as const}}>
-              {STEP_KEYS.map(k=><button key={k} onClick={()=>setActiveStep(k)} style={btn(activeStep===k?G:'#E8E0D8',activeStep===k?'#fff':INK)}>{STEP_LABELS[k]}</button>)}
+              {STEP_KEYS.map(k=><button key={k} onClick={()=>setActiveStep(k)} style={btn(activeStep===k?G:'#D2D2D7',activeStep===k?'#fff':INK)}>{STEP_LABELS[k]}</button>)}
             </div>
             <div style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'16px 18px'}}>
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
@@ -281,7 +281,7 @@ export default function AdminDashboard(){
                       <div style={{fontSize:12,fontWeight:500,color:INK,marginBottom:2}}>{opt.label}</div>
                       {opt.description&&<div style={{fontSize:11,color:INKS,marginBottom:6}}>{opt.description}</div>}
                       <div style={{display:'flex',gap:6}}>
-                        <button onClick={()=>openEdit(opt)} style={{flex:1,...btn('#F0EBE4',INK),fontSize:11,padding:'4px 0'}}>Edit</button>
+                        <button onClick={()=>openEdit(opt)} style={{flex:1,...btn('#E8E8ED',INK),fontSize:11,padding:'4px 0'}}>Edit</button>
                         <button onClick={()=>deleteOption(opt.id)} style={{...btn('#FCEBEB','#C0392B'),fontSize:11,padding:'4px 8px'}}>✕</button>
                       </div>
                     </div>
@@ -292,7 +292,7 @@ export default function AdminDashboard(){
             </div>
           </div>}
           {!loading&&page==='settings'&&<div>
-            <div style={{fontFamily:'Georgia,serif',fontSize:26,fontWeight:300,color:INK,marginBottom:4}}>Settings</div>
+            <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:26,fontWeight:300,color:INK,marginBottom:4}}>Settings</div>
             <div style={{fontSize:13,color:INKS,marginBottom:20}}>Your ring builder configuration.</div>
             <div style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'20px'}}>
               <div style={{marginBottom:14}}>
@@ -340,7 +340,7 @@ export default function AdminDashboard(){
               <button style={{...btn(G),padding:'10px 20px',fontSize:13}} onClick={saveCalendly}>Save settings</button>
             </div>
 
-            <div style={{fontFamily:'Georgia,serif',fontSize:18,fontWeight:300,color:INK,margin:'24px 0 4px'}}>Embed on your website</div>
+            <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:18,fontWeight:300,color:INK,margin:'24px 0 4px'}}>Embed on your website</div>
             <div style={{fontSize:13,color:INKS,marginBottom:14}}>Copy this snippet into any page on your site — WordPress, HighLevel, or plain HTML. The box automatically resizes itself as customers move through the builder.</div>
             <div style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'20px'}}>
               {account?.subdomain
@@ -376,7 +376,7 @@ export default function AdminDashboard(){
               }
             </div>
 
-            <div style={{fontFamily:'Georgia,serif',fontSize:18,fontWeight:300,color:INK,margin:'24px 0 4px'}}>Billing</div>
+            <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:18,fontWeight:300,color:INK,margin:'24px 0 4px'}}>Billing</div>
             <div style={{fontSize:13,color:INKS,marginBottom:14}}>
               Current plan: <span style={{fontWeight:500,color:INK,textTransform:'capitalize'}}>{account?.plan||'—'}</span>
               {' · '}Status: <span style={{fontWeight:500,color:INK,textTransform:'capitalize'}}>{account?.status||'—'}</span>
@@ -398,12 +398,12 @@ export default function AdminDashboard(){
                       <span style={{fontWeight:500,color:INK}}>{used} / {allowance===Infinity?'Unlimited':allowance}</span>
                     </div>
                     {allowance!==Infinity&&
-                      <div style={{height:6,borderRadius:4,background:'#F0EBE4',overflow:'hidden',marginBottom:12}}>
+                      <div style={{height:6,borderRadius:4,background:'#E8E8ED',overflow:'hidden',marginBottom:12}}>
                         <div style={{height:'100%',width:`${pct}%`,background:pct>=100?'#C0392B':G,transition:'width .3s ease'}}/>
                       </div>
                     }
                     {allowance!==Infinity&&pct>=80&&
-                      <button onClick={buyDesignPack} disabled={!!billingLoading} style={{...btn('#F0EBE4',INK),padding:'8px 16px',fontSize:12,opacity:billingLoading?.6:1}}>
+                      <button onClick={buyDesignPack} disabled={!!billingLoading} style={{...btn('#E8E8ED',INK),padding:'8px 16px',fontSize:12,opacity:billingLoading?.6:1}}>
                         {billingLoading==='designs'?'Loading…':'+ Buy 50 more designs — $25'}
                       </button>
                     }
@@ -416,7 +416,7 @@ export default function AdminDashboard(){
               <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10,marginBottom:16}}>
                   <div style={{border:account?.plan==='starter'?'2px solid '+G:'1px solid '+BDR,background:account?.plan==='starter'?GP:W,borderRadius:10,padding:'14px 10px',textAlign:'center'}}>
                     <div style={{fontSize:13,fontWeight:500,color:INK}}>Starter</div>
-                    <div style={{fontFamily:'Georgia,serif',fontSize:20,color:G,margin:'4px 0'}}>$49<span style={{fontSize:11,color:INKS}}>/mo</span></div>
+                    <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:20,color:G,margin:'4px 0'}}>$49<span style={{fontSize:11,color:INKS}}>/mo</span></div>
                     {account?.plan==='starter'
                       ?<div style={{fontSize:11,color:'#0F6E56',fontWeight:500,padding:'8px 0'}}>Current plan</div>
                       :<button onClick={()=>startCheckout('starter')} disabled={!!billingLoading} style={{...btn(G),width:'100%',padding:'7px 0',fontSize:12,opacity:billingLoading?.6:1}}>{billingLoading==='starter'?'Loading…':'Choose'}</button>
@@ -424,7 +424,7 @@ export default function AdminDashboard(){
                   </div>
                   <div style={{border:account?.plan==='pro'?'2px solid '+G:'1px solid '+BDR,background:account?.plan==='pro'?GP:W,borderRadius:10,padding:'14px 10px',textAlign:'center'}}>
                     <div style={{fontSize:13,fontWeight:500,color:INK}}>Pro</div>
-                    <div style={{fontFamily:'Georgia,serif',fontSize:20,color:G,margin:'4px 0'}}>$99<span style={{fontSize:11,color:INKS}}>/mo</span></div>
+                    <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:20,color:G,margin:'4px 0'}}>$99<span style={{fontSize:11,color:INKS}}>/mo</span></div>
                     {account?.plan==='pro'
                       ?<div style={{fontSize:11,color:'#0F6E56',fontWeight:500,padding:'8px 0'}}>Current plan</div>
                       :<button onClick={()=>startCheckout('pro')} disabled={!!billingLoading} style={{...btn(G),width:'100%',padding:'7px 0',fontSize:12,opacity:billingLoading?.6:1}}>{billingLoading==='pro'?'Loading…':'Choose'}</button>
@@ -432,7 +432,7 @@ export default function AdminDashboard(){
                   </div>
                   <div style={{border:account?.plan==='enterprise'?'2px solid '+G:'1px solid '+BDR,background:account?.plan==='enterprise'?GP:W,borderRadius:10,padding:'14px 10px',textAlign:'center'}}>
                     <div style={{fontSize:13,fontWeight:500,color:INK}}>Enterprise</div>
-                    <div style={{fontFamily:'Georgia,serif',fontSize:20,color:G,margin:'4px 0'}}>$249<span style={{fontSize:11,color:INKS}}>/mo</span></div>
+                    <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:20,color:G,margin:'4px 0'}}>$249<span style={{fontSize:11,color:INKS}}>/mo</span></div>
                     {account?.plan==='enterprise'
                       ?<div style={{fontSize:11,color:'#0F6E56',fontWeight:500,padding:'8px 0'}}>Current plan</div>
                       :<button onClick={()=>startCheckout('enterprise')} disabled={!!billingLoading} style={{...btn(G),width:'100%',padding:'7px 0',fontSize:12,opacity:billingLoading?.6:1}}>{billingLoading==='enterprise'?'Loading…':'Choose'}</button>
@@ -440,7 +440,7 @@ export default function AdminDashboard(){
                   </div>
               </div>
               {account?.stripe_customer_id&&
-                <button onClick={openBillingPortal} disabled={!!billingLoading} style={{...btn('#F0EBE4',INK),padding:'9px 18px',fontSize:13,opacity:billingLoading?.6:1}}>
+                <button onClick={openBillingPortal} disabled={!!billingLoading} style={{...btn('#E8E8ED',INK),padding:'9px 18px',fontSize:13,opacity:billingLoading?.6:1}}>
                   {billingLoading==='portal'?'Loading…':'Manage billing →'}
                 </button>
               }
@@ -453,7 +453,7 @@ export default function AdminDashboard(){
       </div>
       {showModal&&<div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.4)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center'}}>
         <div style={{background:W,borderRadius:14,padding:'24px',width:380,maxWidth:'95vw',maxHeight:'90vh',overflowY:'auto' as const}}>
-          <div style={{fontFamily:'Georgia,serif',fontSize:20,fontWeight:300,color:INK,marginBottom:16}}>{editingOpt?'Edit':'Add'} {STEP_LABELS[activeStep]} option</div>
+          <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:20,fontWeight:300,color:INK,marginBottom:16}}>{editingOpt?'Edit':'Add'} {STEP_LABELS[activeStep]} option</div>
           <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Name</label>
           <input style={inp2} value={form.label} onChange={e=>setForm(p=>({...p,label:e.target.value}))} placeholder="e.g. Alexandrite"/>
           <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Description</label>
@@ -473,7 +473,7 @@ export default function AdminDashboard(){
           }
           {(activeStep==='metal'||activeStep==='stone')&&<>
             <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Colour swatch (fallback)</label>
-            <input type="color" value={form.color_hex||'#B5966D'} onChange={e=>setForm(p=>({...p,color_hex:e.target.value}))} style={{height:38,width:'100%',padding:'2px 6px',border:'1px solid '+BDRS,borderRadius:8,marginBottom:10}}/>
+            <input type="color" value={form.color_hex||'#0071E3'} onChange={e=>setForm(p=>({...p,color_hex:e.target.value}))} style={{height:38,width:'100%',padding:'2px 6px',border:'1px solid '+BDRS,borderRadius:8,marginBottom:10}}/>
           </>}
           <div style={{display:'flex',justifyContent:'flex-end',gap:8,marginTop:8}}>
             <button onClick={()=>{setShowModal(false);setEditingOpt(null)}} style={{background:'none',border:'1px solid '+BDR,borderRadius:7,padding:'8px 16px',fontSize:13,color:INKS,cursor:'pointer',fontFamily:'inherit'}}>Cancel</button>
