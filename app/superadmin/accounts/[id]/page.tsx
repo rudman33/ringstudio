@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 
-const G="#B5966D",INK="#1C1612",INKS="#9C8470",W="#FFFFFF",BDRS="rgba(181,150,109,0.35)"
+const G="#0071E3",INK="#1D1D1F",INKS="#86868B",W="#FFFFFF",BDRS="rgba(0,0,0,0.18)"
 
 const FIELDS: [string,string][] = [
   ["business_name","Business name"],
@@ -85,7 +85,7 @@ export default function ConfigureAccountPage() {
   }
 
   if (!form) {
-    return <div style={{padding:32,fontFamily:"Georgia,serif",color:INK}}>{msg || "Loading..."}</div>
+    return <div style={{padding:32,fontFamily:"Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif",color:INK}}>{msg || "Loading..."}</div>
   }
 
   const grouped: Record<string, any[]> = {}
@@ -94,7 +94,7 @@ export default function ConfigureAccountPage() {
   return (
     <div style={{padding:"32px",maxWidth:720,margin:"0 auto",fontFamily:"system-ui,sans-serif"}}>
       <a href="/superadmin" style={{fontSize:13,color:INKS}}>&larr; Back to platform overview</a>
-      <h1 style={{fontFamily:"Georgia,serif",fontSize:28,color:INK,margin:"12px 0 4px"}}>{form.business_name}</h1>
+      <h1 style={{fontFamily:"Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif",fontSize:28,color:INK,margin:"12px 0 4px"}}>{form.business_name}</h1>
       <div style={{fontSize:13,color:INKS,marginBottom:24}}>
         {form.subdomain}.ringstudio.ca &middot; {form.plan} &middot; {form.status}
       </div>
@@ -118,7 +118,7 @@ export default function ConfigureAccountPage() {
       <a href={"/" + form.subdomain} target="_blank" rel="noreferrer"
         style={{marginLeft:12,fontSize:13,color:G}}>View builder &#8599;</a>
 
-      <h2 style={{fontFamily:"Georgia,serif",fontSize:20,color:INK,margin:"36px 0 12px"}}>
+      <h2 style={{fontFamily:"Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif",fontSize:20,color:INK,margin:"36px 0 12px"}}>
         Ring options ({options.length})
       </h2>
       {Object.keys(grouped).sort().map(step => (

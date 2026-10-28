@@ -314,7 +314,7 @@ export default function MarketingPage(){
                 <div style={{fontSize:14,fontWeight:500,color:INK,marginBottom:6}}>{p.label}</div>
                 <div style={{display:'flex',alignItems:'baseline',gap:4,marginBottom:10}}>
                   <span style={{fontFamily:MONO,fontSize:34,color:INK,fontWeight:700}}>${p.price}</span>
-                  <span style={{fontSize:13,color:INKS}}>/month</span>
+                  <span style={{fontSize:13,color:INKS}}> USD/month</span>
                 </div>
                 <div style={{fontSize:13,color:INKS,marginBottom:20,lineHeight:1.55,minHeight:40}}>{p.desc}</div>
                 <a href={`/auth/signup?plan=${p.key}`} style={{...(p.popular?ctaBtn:ctaBtnGhostLight),display:'block',textAlign:'center' as const,marginBottom:22,padding:'11px 0'}}>Start your free trial</a>
@@ -328,7 +328,7 @@ export default function MarketingPage(){
               </div>
             ))}
           </div>
-          <div style={{fontSize:12,color:INKS,marginTop:28}}>Every plan includes a 14-day free trial. No setup fees. Need more designs? Extra packs of 50 are $25.</div>
+          <div style={{fontSize:12,color:INKS,marginTop:28}}>All prices in USD. Every plan includes a 14-day free trial. No setup fees. Need more designs? Extra packs of 50 are $25 USD.</div>
         </div>
       </Reveal>
 

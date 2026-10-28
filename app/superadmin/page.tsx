@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 
-const G='#B5966D',GD='#8A6D48',GP='#FAF5EE',INK='#1C1612',INKS='#9C8470',INKG='#C8B8A8',W='#FFFFFF',BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
+const G='#0071E3',GD='#0058B0',GP='#FBFBFD',INK='#1D1D1F',INKS='#86868B',INKG='#C7C7CC',W='#FFFFFF',BDR='rgba(0,0,0,0.08)',BDRS='rgba(0,0,0,0.18)'
 
 export default function SuperAdmin(){
   const [accounts,setAccounts]=useState<any[]>([])
@@ -48,16 +48,16 @@ export default function SuperAdmin(){
   },0)
 
   return(
-    <div style={{minHeight:'100vh',background:'#F8F3EC'}}>
+    <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',minHeight:'100vh',background:'#F5F5F7'}}>
       <div style={{height:50,background:W,borderBottom:'1px solid '+BDR,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 1.5rem',position:'sticky',top:0,zIndex:50}}>
-        <div style={{fontFamily:'Georgia,serif',fontSize:20,color:INK}}>Ring<span style={{color:G}}>Studio</span><span style={{fontSize:12,color:INKS,fontFamily:'sans-serif',marginLeft:8}}>Super Admin</span></div>
+        <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:20,color:INK}}>Ring<span style={{color:G}}>Studio</span><span style={{fontSize:12,color:INKS,fontFamily:'sans-serif',marginLeft:8}}>Super Admin</span></div>
         <button onClick={()=>window.location.href='/auth/login'} style={{background:'none',border:'1px solid '+BDR,borderRadius:7,padding:'5px 12px',fontSize:12,color:INKS,cursor:'pointer',fontFamily:'inherit'}}>Sign out</button>
       </div>
 
       <div style={{maxWidth:1100,margin:'0 auto',padding:'2rem 1.5rem'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:24}}>
           <div>
-            <div style={{fontFamily:'Georgia,serif',fontSize:28,fontWeight:300,color:INK,marginBottom:4}}>Platform overview</div>
+            <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:28,fontWeight:300,color:INK,marginBottom:4}}>Platform overview</div>
             <div style={{fontSize:13,color:INKS}}>{accounts.length} total jeweler accounts</div>
           </div>
           <button onClick={()=>setShowModal(true)} style={btn(G)}>+ Add jeweler</button>
@@ -67,7 +67,7 @@ export default function SuperAdmin(){
           {[['Total accounts',accounts.length],['Active',activeCount],['On trial',trialCount],['MRR',`$${totalRevenue}`]].map(([l,v])=>(
             <div key={l as string} style={{background:W,border:'1px solid '+BDR,borderRadius:12,padding:'16px'}}>
               <div style={{fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.06em',marginBottom:6}}>{l}</div>
-              <div style={{fontFamily:'Georgia,serif',fontSize:28,fontWeight:300,color:INK}}>{v}</div>
+              <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:28,fontWeight:300,color:INK}}>{v}</div>
             </div>
           ))}
         </div>
@@ -85,8 +85,8 @@ export default function SuperAdmin(){
                 <div style={{fontSize:12,color:INKS,marginTop:2}}>{acc.email} · {acc.subdomain}.{process.env.NEXT_PUBLIC_APP_DOMAIN||'ringstudio.ca'} · {acc.plan} plan</div>
               </div>
               <div style={{display:'flex',gap:6,flexShrink:0}}>
-                <a href={`/superadmin/accounts/${acc.id}`} style={{...btn('#F0EBE4',INK),textDecoration:'none',display:'inline-block'}}>Configure</a>
-                <a href={`/${acc.subdomain}`} target="_blank" style={{...btn('#F0EBE4',INK),textDecoration:'none',display:'inline-block'}}>View builder</a>
+                <a href={`/superadmin/accounts/${acc.id}`} style={{...btn('#E8E8ED',INK),textDecoration:'none',display:'inline-block'}}>Configure</a>
+                <a href={`/${acc.subdomain}`} target="_blank" style={{...btn('#E8E8ED',INK),textDecoration:'none',display:'inline-block'}}>View builder</a>
                 {acc.status!=='active'&&<button onClick={()=>updateStatus(acc.id,'active')} style={btn('#0F6E56')}>Activate</button>}
                 {acc.status==='active'&&<button onClick={()=>{if(confirm(`Suspend ${acc.business_name}? Their public ring builder will stop working immediately.`)) updateStatus(acc.id,'suspended')}} style={btn('#C0392B')}>Suspend</button>}
               </div>
@@ -108,7 +108,7 @@ export default function SuperAdmin(){
 
       {showModal&&<div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.4)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center'}}>
         <div style={{background:W,borderRadius:14,padding:'24px',width:380,maxWidth:'95vw'}}>
-          <div style={{fontFamily:'Georgia,serif',fontSize:20,fontWeight:300,color:INK,marginBottom:16}}>Add new jeweler</div>
+          <div style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif',fontSize:20,fontWeight:300,color:INK,marginBottom:16}}>Add new jeweler</div>
           <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Business name</label>
           <input style={inp2} value={form.business_name} onChange={e=>setForm(p=>({...p,business_name:e.target.value}))} placeholder="Tiffany & Co."/>
           <label style={{display:'block',fontSize:11,color:INKS,textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4}}>Email</label>

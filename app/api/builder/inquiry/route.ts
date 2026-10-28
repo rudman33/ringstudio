@@ -53,48 +53,48 @@ export async function POST(request: NextRequest) {
   // Email to jeweler
   const sel = body.selections || {}
   const jewelerHtml = `
-    <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:2rem;background:#F8F3EC;">
-      <div style="background:#fff;border-radius:12px;padding:2rem;border:1px solid rgba(181,150,109,0.2)">
-        <h1 style="color:#1C1612;font-weight:300;font-size:28px;margin:0 0 4px">New ring inquiry</h1>
-        <p style="color:#9C8470;margin:0 0 24px;font-size:14px">Reference: <strong style="color:#B5966D">${reference_code}</strong></p>
+    <div style="font-family:Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;padding:2rem;background:#F5F5F7;">
+      <div style="background:#fff;border-radius:12px;padding:2rem;border:1px solid rgba(0,113,227,0.2)">
+        <h1 style="color:#1D1D1F;font-weight:300;font-size:28px;margin:0 0 4px">New ring inquiry</h1>
+        <p style="color:#86868B;margin:0 0 24px;font-size:14px">Reference: <strong style="color:#0071E3">${reference_code}</strong></p>
         
-        <h3 style="color:#B5966D;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">Customer</h3>
+        <h3 style="color:#0071E3;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">Customer</h3>
         <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
-          <tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#9C8470;font-size:13px">Name</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${body.customer_name}</td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#9C8470;font-size:13px">Email</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${body.customer_email}</td></tr>
-          <tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#9C8470;font-size:13px">Phone</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${body.customer_phone || '—'}</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#86868B;font-size:13px">Name</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${body.customer_name}</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#86868B;font-size:13px">Email</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${body.customer_email}</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#86868B;font-size:13px">Phone</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${body.customer_phone || '—'}</td></tr>
         </table>
         
-        <h3 style="color:#B5966D;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">Ring design</h3>
+        <h3 style="color:#0071E3;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">Ring design</h3>
         <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
-          ${[['Type',body.ring_type],['Stone',sel.stone],['Shape',sel.shape],['Carat',sel.carat],['Setting',sel.setting],['Metal',sel.metal],['Band',sel.band],['Budget',body.budget_range],['Timeline',body.timeline],['Ring size',body.ring_size]].filter(([,v])=>v).map(([k,v])=>`<tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#9C8470;font-size:13px">${k}</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${v}</td></tr>`).join('')}
+          ${[['Type',body.ring_type],['Stone',sel.stone],['Shape',sel.shape],['Carat',sel.carat],['Setting',sel.setting],['Metal',sel.metal],['Band',sel.band],['Budget',body.budget_range],['Timeline',body.timeline],['Ring size',body.ring_size]].filter(([,v])=>v).map(([k,v])=>`<tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#86868B;font-size:13px">${k}</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${v}</td></tr>`).join('')}
         </table>
         
-        ${body.notes ? `<h3 style="color:#B5966D;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 8px">Notes</h3><p style="font-size:13px;color:#5A4A3A;background:#FAF5EE;padding:12px;border-radius:8px;margin:0 0 24px">${body.notes}</p>` : ''}
+        ${body.notes ? `<h3 style="color:#0071E3;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 8px">Notes</h3><p style="font-size:13px;color:#5A4A3A;background:#FBFBFD;padding:12px;border-radius:8px;margin:0 0 24px">${body.notes}</p>` : ''}
         
-        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://ringstudio.ca'}/admin/dashboard" style="display:inline-block;background:#B5966D;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500">View in admin panel</a>
+        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://ringstudio.ca'}/admin/dashboard" style="display:inline-block;background:#0071E3;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500">View in admin panel</a>
       </div>
     </div>
   `
 
   // Email to customer
   const customerHtml = `
-    <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:2rem;background:#F8F3EC;">
-      <div style="background:#fff;border-radius:12px;padding:2rem;border:1px solid rgba(181,150,109,0.2)">
-        <h1 style="color:#1C1612;font-weight:300;font-size:28px;margin:0 0 4px">Your ring inquiry</h1>
-        <p style="color:#9C8470;margin:0 0 24px;font-size:14px">Thank you for submitting your design. We'll be in touch within 24 hours.</p>
+    <div style="font-family:Inter,-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;padding:2rem;background:#F5F5F7;">
+      <div style="background:#fff;border-radius:12px;padding:2rem;border:1px solid rgba(0,113,227,0.2)">
+        <h1 style="color:#1D1D1F;font-weight:300;font-size:28px;margin:0 0 4px">Your ring inquiry</h1>
+        <p style="color:#86868B;margin:0 0 24px;font-size:14px">Thank you for submitting your design. We'll be in touch within 24 hours.</p>
         
-        <div style="background:#FAF5EE;border-radius:10px;padding:16px;margin-bottom:24px;text-align:center">
-          <div style="font-size:11px;color:#9C8470;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Your reference</div>
-          <div style="font-size:24px;color:#B5966D;font-weight:400">${reference_code}</div>
+        <div style="background:#FBFBFD;border-radius:10px;padding:16px;margin-bottom:24px;text-align:center">
+          <div style="font-size:11px;color:#86868B;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Your reference</div>
+          <div style="font-size:24px;color:#0071E3;font-weight:400">${reference_code}</div>
         </div>
         
-        <h3 style="color:#B5966D;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">Your design</h3>
+        <h3 style="color:#0071E3;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">Your design</h3>
         <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
-          ${[['Ring type',body.ring_type],['Stone',sel.stone],['Shape',sel.shape],['Carat',sel.carat],['Setting',sel.setting],['Metal',sel.metal],['Band',sel.band]].filter(([,v])=>v).map(([k,v])=>`<tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#9C8470;font-size:13px">${k}</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${v}</td></tr>`).join('')}
+          ${[['Ring type',body.ring_type],['Stone',sel.stone],['Shape',sel.shape],['Carat',sel.carat],['Setting',sel.setting],['Metal',sel.metal],['Band',sel.band]].filter(([,v])=>v).map(([k,v])=>`<tr><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;color:#86868B;font-size:13px">${k}</td><td style="padding:8px 0;border-bottom:1px solid #f0e8dc;font-size:13px;font-weight:500">${v}</td></tr>`).join('')}
         </table>
         
-        <p style="font-size:13px;color:#9C8470;margin:0">Keep this email for your records. A jewellery specialist will contact you shortly.</p>
+        <p style="font-size:13px;color:#86868B;margin:0">Keep this email for your records. A jewellery specialist will contact you shortly.</p>
       </div>
     </div>
   `

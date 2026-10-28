@@ -36,7 +36,7 @@ const data = {
           "@type": "Offer",
           name: "Starter",
           price: "49",
-          priceCurrency: "USD", // confirm currency
+          priceCurrency: "USD",
           description:
             "One builder, up to 100 AI designs per month, unlimited inquiries, email notifications.",
         },
@@ -44,7 +44,7 @@ const data = {
           "@type": "Offer",
           name: "Pro",
           price: "99",
-          priceCurrency: "USD", // confirm currency
+          priceCurrency: "USD",
           description:
             "500 AI designs per month, custom brand colour, Calendly integration, priority support.",
         },
@@ -52,7 +52,7 @@ const data = {
           "@type": "Offer",
           name: "Enterprise",
           price: "249",
-          priceCurrency: "USD", // confirm currency
+          priceCurrency: "USD",
           description:
             "Unlimited AI designs, multiple builder configurations, dedicated onboarding, custom integrations.",
         },
