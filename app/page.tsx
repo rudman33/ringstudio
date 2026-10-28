@@ -2,11 +2,11 @@
 import { useState, useEffect, useRef, ReactNode } from 'react'
 import JsonLd, { FAQS } from './JsonLd'
 
-const STAGE='#15110D',STAGE_LINE='rgba(255,255,255,0.10)'
-const CREAM='#F8F3EC',CREAM_PALE='#FAF5EE',W='#FFFFFF'
-const INK='#1C1612',INKS='#9C8470'
-const G='#B5966D',GD='#8A6D48',GL='#E3C698'
-const BDR='rgba(181,150,109,0.18)',BDRS='rgba(181,150,109,0.35)'
+const STAGE='#000000',STAGE_LINE='rgba(255,255,255,0.10)'
+const CREAM='#F5F5F7',CREAM_PALE='#FBFBFD',W='#FFFFFF'
+const INK='#1D1D1F',INKS='#86868B'
+const G='#0071E3',GD='#0058B0',GL='#2997FF'
+const BDR='rgba(0,0,0,0.08)',BDRS='rgba(0,0,0,0.18)'
 const MONO='ui-monospace,"SF Mono",Menlo,monospace'
 
 const PLANS=[
@@ -90,16 +90,16 @@ export default function MarketingPage(){
   const wrap={maxWidth:1080,margin:'0 auto',padding:'0 24px'} as any
   const eyebrowLight={fontSize:11,color:G,textTransform:'uppercase' as const,letterSpacing:'.14em',fontWeight:600,marginBottom:14,textAlign:'center' as const}
   const eyebrowDark={fontSize:11,color:GL,textTransform:'uppercase' as const,letterSpacing:'.14em',fontWeight:600,marginBottom:16,textAlign:'center' as const}
-  const h2={fontFamily:'Cormorant,Georgia,serif',fontSize:38,fontWeight:300,color:INK,marginBottom:14,letterSpacing:'-0.01em',textAlign:'center' as const}
+  const h2={fontFamily:'Inter,-apple-system,BlinkMacSystemFont,\'SF Pro Display\',\'Helvetica Neue\',sans-serif',fontSize:40,fontWeight:600,color:INK,marginBottom:14,letterSpacing:'-0.025em',textAlign:'center' as const}
   const ctaBtn={display:'inline-block',background:G,border:'none',borderRadius:9,padding:'15px 30px',fontSize:14,fontWeight:500,color:'#fff',cursor:'pointer',textDecoration:'none',fontFamily:'inherit'} as any
-  const ctaBtnGhostDark={display:'inline-block',background:'transparent',border:'1px solid rgba(255,255,255,0.28)',borderRadius:9,padding:'15px 30px',fontSize:14,fontWeight:500,color:'#F4EEE4',cursor:'pointer',textDecoration:'none',fontFamily:'inherit'} as any
+  const ctaBtnGhostDark={display:'inline-block',background:'transparent',border:'1px solid rgba(255,255,255,0.28)',borderRadius:9,padding:'15px 30px',fontSize:14,fontWeight:500,color:'#F5F5F7',cursor:'pointer',textDecoration:'none',fontFamily:'inherit'} as any
   const ctaBtnGhostLight={display:'inline-block',background:'transparent',border:'1px solid '+BDRS,borderRadius:9,padding:'11px 22px',fontSize:13,fontWeight:500,color:INK,cursor:'pointer',textDecoration:'none',fontFamily:'inherit'} as any
 
   const imgScale=0.9+imgProgress*0.1
   const imgOpacity=0.5+imgProgress*0.5
 
   return(
-    <div style={{background:CREAM,fontFamily:'Montserrat,-apple-system,sans-serif'}}>
+    <div style={{background:CREAM,fontFamily:'Inter,-apple-system,BlinkMacSystemFont,\'SF Pro Display\',\'Helvetica Neue\',sans-serif'}}>
       <JsonLd />
       <style>{`
         html{scroll-behavior:smooth}
@@ -110,7 +110,7 @@ export default function MarketingPage(){
         .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
         .reveal-in{opacity:1;transform:translateY(0)}
         .plan-card{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s ease}
-        .plan-card:hover{transform:translateY(-5px);box-shadow:0 16px 34px rgba(28,22,18,0.09)}
+        .plan-card:hover{transform:translateY(-5px);box-shadow:0 16px 34px rgba(0,0,0,0.10)}
         .feature-card{transition:border-color .2s ease,transform .25s cubic-bezier(.2,.8,.2,1)}
         .feature-card:hover{border-color:${BDRS};transform:translateY(-3px)}
         .nav-shell{transition:background-color .35s ease,backdrop-filter .35s ease,border-color .35s ease}
@@ -140,14 +140,17 @@ export default function MarketingPage(){
       {/* ───────── STICKY NAV ───────── */}
       <div className="nav-shell" style={{
         position:'fixed' as const,top:0,left:0,right:0,zIndex:50,
-        background:scrolled?'rgba(21,17,13,0.82)':'transparent',
+        background:scrolled?'rgba(0,0,0,0.72)':'transparent',
         backdropFilter:scrolled?'blur(14px)':'none',
         borderBottom:scrolled?'1px solid rgba(255,255,255,0.08)':'1px solid transparent',
       }}>
         <div className="nav-row" style={{...wrap,height:60,display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-          <div style={{fontFamily:'Cormorant,Georgia,serif',fontSize:52,fontWeight:600,color:'#F4EEE4'}}>Ring <span style={{color:GL}}>Studio</span></div>
+          <a href="/" aria-label="Ring Studio" style={{display:'flex',alignItems:'center',gap:10,textDecoration:'none',color:'#F5F5F7'}}>
+            <svg viewBox="40 20 160 200" width="26" height="32" aria-hidden="true"><defs><linearGradient id="rsm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#F5F5F7"/><stop offset=".5" stopColor="#A1A1A6"/><stop offset="1" stopColor="#6E6E73"/></linearGradient><linearGradient id="rsg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FFFFFF"/><stop offset="1" stopColor="#9FB4D1"/></linearGradient></defs><circle cx="120" cy="150" r="62" fill="none" stroke="url(#rsm)" strokeWidth="13"/><polygon points="96,36 144,36 160,58 80,58" fill="url(#rsg)"/><polygon points="80,58 160,58 120,96" fill="url(#rsg)" opacity=".92"/><g stroke="#0B0B0D" strokeWidth="1.6" strokeLinejoin="round" fill="none" opacity=".75"><polygon points="96,36 144,36 160,58 120,96 80,58"/><line x1="80" y1="58" x2="160" y2="58"/><line x1="108" y1="58" x2="120" y2="36"/><line x1="132" y1="58" x2="120" y2="36"/><line x1="108" y1="58" x2="120" y2="96"/><line x1="132" y1="58" x2="120" y2="96"/></g></svg>
+            <span style={{fontSize:21,letterSpacing:'-0.03em'}}><b style={{fontWeight:600}}>Ring</b> <span style={{fontWeight:300}}>Studio</span></span>
+          </a>
           <div style={{display:'flex',gap:20,alignItems:'center'}}>
-            <a href="/auth/login" className="nav-signin" style={{fontSize:13,color:'rgba(244,238,228,0.7)',textDecoration:'none'}}>Sign in</a>
+            <a href="/auth/login" className="nav-signin" style={{fontSize:13,color:'rgba(245,245,247,0.7)',textDecoration:'none'}}>Sign in</a>
             <a href="/auth/signup" style={{...ctaBtn,padding:'8px 16px',fontSize:13}}>Start your free trial</a>
           </div>
         </div>
@@ -155,18 +158,18 @@ export default function MarketingPage(){
 
       {/* ───────── HERO — dark stage, centered, product reveal below ───────── */}
       <div style={{background:STAGE,position:'relative' as const,overflow:'hidden'}}>
-        <div style={{position:'absolute' as const,top:'-10%',left:'50%',transform:`translateX(-50%) translateY(${reducedMotion?0:scrollY*0.08}px)`,width:900,height:600,borderRadius:'50%',background:'radial-gradient(circle,rgba(227,198,152,0.14),transparent 70%)',pointerEvents:'none' as const}}/>
+        <div style={{position:'absolute' as const,top:'-10%',left:'50%',transform:`translateX(-50%) translateY(${reducedMotion?0:scrollY*0.08}px)`,width:900,height:600,borderRadius:'50%',background:'radial-gradient(circle,rgba(120,150,200,0.14),transparent 70%)',pointerEvents:'none' as const}}/>
 
         <div style={{...wrap,padding:'168px 24px 0',textAlign:'center' as const,position:'relative' as const,zIndex:2}}>
           <div className={mounted?'rise-1':''} style={{opacity:mounted?undefined:0}}>
             <div style={eyebrowDark}>White-label ring builder for jewelers</div>
-            <h1 className="hero-title" style={{fontFamily:'Cormorant,Georgia,serif',fontWeight:500,color:'#F4EEE4',letterSpacing:'-0.015em',margin:'0 auto'}}>
+            <h1 className="hero-title" style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,\'SF Pro Display\',\'Helvetica Neue\',sans-serif',fontWeight:600,color:'#F5F5F7',letterSpacing:'-0.03em',margin:'0 auto'}}>
               <div style={{fontSize:54,lineHeight:1.18}}>Your customers <em style={{fontStyle:'italic',color:GL}}>design</em> it.</div>
               <div style={{fontSize:54,lineHeight:1.18}}>You quote it. They buy it.</div>
             </h1>
           </div>
           <div className={mounted?'rise-2':''} style={{opacity:mounted?undefined:0,maxWidth:560,margin:'26px auto 0'}}>
-            <p style={{fontSize:17,color:'rgba(244,238,228,0.72)',lineHeight:1.7,margin:0}}>
+            <p style={{fontSize:17,color:'rgba(245,245,247,0.72)',lineHeight:1.7,margin:0}}>
               An interactive ring builder lives right on your website. Customers choose the stone, shape, and metal — your AI renders a photorealistic preview — and every inquiry lands in your inbox, ready to quote.
             </p>
           </div>
@@ -175,7 +178,7 @@ export default function MarketingPage(){
               <a href="/auth/signup" style={ctaBtn}>Start your free trial</a>
               <a href="/test" target="_blank" style={ctaBtnGhostDark}>See a live builder ↗</a>
             </div>
-            <div style={{fontSize:12,color:'rgba(244,238,228,0.45)',marginTop:16}}>14 days free. Cancel anytime during your trial.</div>
+            <div style={{fontSize:12,color:'rgba(245,245,247,0.45)',marginTop:16}}>14 days free. Cancel anytime during your trial.</div>
           </div>
 
           {/* Product reveal — sample inquiry carousel, scroll-linked scale */}
@@ -186,7 +189,7 @@ export default function MarketingPage(){
               transition:'transform .1s linear,opacity .1s linear',
               willChange:'transform,opacity',
             }}>
-              <div style={{position:'absolute' as const,top:'10%',left:'50%',transform:'translateX(-50%)',width:'80%',height:'70%',borderRadius:'50%',background:'radial-gradient(circle,rgba(227,198,152,0.22),transparent 70%)',pointerEvents:'none' as const}}/>
+              <div style={{position:'absolute' as const,top:'10%',left:'50%',transform:'translateX(-50%)',width:'80%',height:'70%',borderRadius:'50%',background:'radial-gradient(circle,rgba(120,150,200,0.22),transparent 70%)',pointerEvents:'none' as const}}/>
               <div style={{position:'relative' as const,borderRadius:20,overflow:'hidden',boxShadow:'0 40px 80px rgba(0,0,0,0.5)',aspectRatio:'1'}}>
                 {SAMPLE_INQUIRIES.map((inq,i)=>(
                   <img
@@ -202,34 +205,34 @@ export default function MarketingPage(){
             <div style={{maxWidth:520,margin:'28px auto 0',background:'rgba(255,255,255,0.05)',backdropFilter:'blur(16px)',border:'1px solid rgba(255,255,255,0.12)',borderRadius:16,padding:'22px 26px'}}>
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
                 <span style={{fontFamily:MONO,fontSize:10,color:GL,letterSpacing:'.08em'}}>SAMPLE INQUIRY</span>
-                <span style={{fontFamily:MONO,fontSize:10,color:'rgba(244,238,228,0.45)',letterSpacing:'.08em'}}>RECEIVED JUST NOW</span>
+                <span style={{fontFamily:MONO,fontSize:10,color:'rgba(245,245,247,0.45)',letterSpacing:'.08em'}}>RECEIVED JUST NOW</span>
               </div>
 
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:16,paddingBottom:16,borderBottom:'1px solid rgba(255,255,255,0.1)'}}>
                 <div style={{textAlign:'left' as const}}>
-                  <div style={{fontSize:10,color:'rgba(244,238,228,0.5)',textTransform:'uppercase' as const,letterSpacing:'.08em',marginBottom:3}}>Contact</div>
-                  <div style={{fontSize:16,color:'#F4EEE4',fontWeight:600}}>{SAMPLE_INQUIRIES[heroIndex].name}</div>
+                  <div style={{fontSize:10,color:'rgba(245,245,247,0.5)',textTransform:'uppercase' as const,letterSpacing:'.08em',marginBottom:3}}>Contact</div>
+                  <div style={{fontSize:16,color:'#F5F5F7',fontWeight:600}}>{SAMPLE_INQUIRIES[heroIndex].name}</div>
                 </div>
-                <div style={{fontSize:12,color:'rgba(244,238,228,0.55)'}}>{SAMPLE_INQUIRIES[heroIndex].email}</div>
+                <div style={{fontSize:12,color:'rgba(245,245,247,0.55)'}}>{SAMPLE_INQUIRIES[heroIndex].email}</div>
               </div>
 
-              <div style={{fontSize:10,color:'rgba(244,238,228,0.5)',textTransform:'uppercase' as const,letterSpacing:'.08em',marginBottom:10,textAlign:'left' as const}}>Ring preferences</div>
+              <div style={{fontSize:10,color:'rgba(245,245,247,0.5)',textTransform:'uppercase' as const,letterSpacing:'.08em',marginBottom:10,textAlign:'left' as const}}>Ring preferences</div>
               <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:14,marginBottom:16}}>
                 <div>
-                  <div style={{fontSize:10,color:'rgba(244,238,228,0.5)',textTransform:'uppercase' as const,letterSpacing:'.08em',marginBottom:4}}>Stone</div>
-                  <div style={{fontSize:14,color:'#F4EEE4',fontWeight:500}}>{SAMPLE_INQUIRIES[heroIndex].stone}</div>
+                  <div style={{fontSize:10,color:'rgba(245,245,247,0.5)',textTransform:'uppercase' as const,letterSpacing:'.08em',marginBottom:4}}>Stone</div>
+                  <div style={{fontSize:14,color:'#F5F5F7',fontWeight:500}}>{SAMPLE_INQUIRIES[heroIndex].stone}</div>
                 </div>
                 <div>
-                  <div style={{fontSize:10,color:'rgba(244,238,228,0.5)',textTransform:'uppercase' as const,letterSpacing:'.08em',marginBottom:4}}>Style</div>
-                  <div style={{fontSize:14,color:'#F4EEE4',fontWeight:500}}>{SAMPLE_INQUIRIES[heroIndex].style}</div>
+                  <div style={{fontSize:10,color:'rgba(245,245,247,0.5)',textTransform:'uppercase' as const,letterSpacing:'.08em',marginBottom:4}}>Style</div>
+                  <div style={{fontSize:14,color:'#F5F5F7',fontWeight:500}}>{SAMPLE_INQUIRIES[heroIndex].style}</div>
                 </div>
                 <div>
-                  <div style={{fontSize:10,color:'rgba(244,238,228,0.5)',textTransform:'uppercase' as const,letterSpacing:'.08em',marginBottom:4}}>Metal</div>
-                  <div style={{fontSize:14,color:'#F4EEE4',fontWeight:500}}>{SAMPLE_INQUIRIES[heroIndex].metal}</div>
+                  <div style={{fontSize:10,color:'rgba(245,245,247,0.5)',textTransform:'uppercase' as const,letterSpacing:'.08em',marginBottom:4}}>Metal</div>
+                  <div style={{fontSize:14,color:'#F5F5F7',fontWeight:500}}>{SAMPLE_INQUIRIES[heroIndex].metal}</div>
                 </div>
               </div>
               <div style={{borderTop:'1px solid rgba(255,255,255,0.1)',paddingTop:14,display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:16}}>
-                <span style={{fontSize:12,color:'rgba(244,238,228,0.55)'}}>Budget</span>
+                <span style={{fontSize:12,color:'rgba(245,245,247,0.55)'}}>Budget</span>
                 <span style={{fontFamily:MONO,fontSize:18,color:GL,fontWeight:700}}>{SAMPLE_INQUIRIES[heroIndex].budget}</span>
               </div>
 
@@ -243,7 +246,7 @@ export default function MarketingPage(){
                   />
                 ))}
               </div>
-              <div style={{fontSize:11,color:'rgba(244,238,228,0.4)',fontStyle:'italic' as const,textAlign:'center' as const}}>Sample inquiry for illustration — this is what lands in your inbox automatically</div>
+              <div style={{fontSize:11,color:'rgba(245,245,247,0.4)',fontStyle:'italic' as const,textAlign:'center' as const}}>Sample inquiry for illustration — this is what lands in your inbox automatically</div>
             </div>
           </div>
         </div>
@@ -348,19 +351,19 @@ export default function MarketingPage(){
       {/* ───────── CLOSING — dark stage, echoes hero ───────── */}
       <Reveal>
         <div style={{background:STAGE,position:'relative' as const,overflow:'hidden'}}>
-          <div style={{position:'absolute' as const,bottom:'-30%',left:'50%',transform:`translateX(-50%) translateY(${reducedMotion?0:-scrollY*0.05}px)`,width:700,height:500,borderRadius:'50%',background:'radial-gradient(circle,rgba(227,198,152,0.14),transparent 70%)',pointerEvents:'none' as const}}/>
+          <div style={{position:'absolute' as const,bottom:'-30%',left:'50%',transform:`translateX(-50%) translateY(${reducedMotion?0:-scrollY*0.05}px)`,width:700,height:500,borderRadius:'50%',background:'radial-gradient(circle,rgba(120,150,200,0.14),transparent 70%)',pointerEvents:'none' as const}}/>
           <div style={{...wrap,padding:'120px 24px',textAlign:'center' as const,position:'relative' as const,zIndex:2}}>
-            <h2 style={{fontFamily:'Cormorant,Georgia,serif',fontSize:36,fontWeight:500,color:'#F4EEE4',marginBottom:24}}>
+            <h2 style={{fontFamily:'Inter,-apple-system,BlinkMacSystemFont,\'SF Pro Display\',\'Helvetica Neue\',sans-serif',fontSize:40,fontWeight:600,letterSpacing:'-0.025em',color:'#F5F5F7',marginBottom:24}}>
               Ready for customers to <em style={{fontStyle:'italic',color:GL}}>design it</em> themselves?
             </h2>
             <a href="/auth/signup" style={ctaBtn}>Start your free trial</a>
           </div>
           <div style={{borderTop:'1px solid '+STAGE_LINE,position:'relative' as const,zIndex:2}}>
-            <div style={{...wrap,padding:'24px 24px',display:'flex',justifyContent:'space-between',fontSize:12,color:'rgba(244,238,228,0.45)',flexWrap:'wrap' as const,gap:12}}>
+            <div style={{...wrap,padding:'24px 24px',display:'flex',justifyContent:'space-between',fontSize:12,color:'rgba(245,245,247,0.45)',flexWrap:'wrap' as const,gap:12}}>
               <div>© {new Date().getFullYear()} Ring Studio</div>
               <div style={{display:'flex',gap:18}}>
-                <a href="/auth/login" style={{color:'rgba(244,238,228,0.6)',textDecoration:'none'}}>Sign in</a>
-                <a href="/test" target="_blank" style={{color:'rgba(244,238,228,0.6)',textDecoration:'none'}}>Live demo</a>
+                <a href="/auth/login" style={{color:'rgba(245,245,247,0.6)',textDecoration:'none'}}>Sign in</a>
+                <a href="/test" target="_blank" style={{color:'rgba(245,245,247,0.6)',textDecoration:'none'}}>Live demo</a>
               </div>
             </div>
           </div>
